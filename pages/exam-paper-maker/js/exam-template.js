@@ -16,7 +16,7 @@ const EXAM_CSS = `
   body {
     font-family: 'Verdana', 'Segoe UI', Arial, sans-serif;
     color: #111;
-    font-size: 13.5px;
+    font-size: 18px;
     line-height: 1.5;
     margin: 0;
     padding: 0;
@@ -35,7 +35,7 @@ const EXAM_CSS = `
   .header-grid .time,
   .header-grid .mm {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 18px;
     white-space: nowrap;
   }
   .header-grid .time { text-align: left; }
@@ -46,7 +46,7 @@ const EXAM_CSS = `
   }
 
   .school-name {
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 700;
     margin: 0 0 2px 0;
   }
@@ -54,7 +54,7 @@ const EXAM_CSS = `
   .exam-title,
   .exam-class,
   .exam-subject {
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 700;
     margin: 2px 0;
   }
@@ -76,7 +76,7 @@ const EXAM_CSS = `
     font-weight: 700;
     text-decoration: underline;
     margin: 4px 0 16px 0;
-    font-size: 14px;
+    font-size: 18px;
   }
 
   /* ---------- QUESTION BLOCK ---------- */
@@ -90,7 +90,7 @@ const EXAM_CSS = `
     align-items: baseline;
     font-weight: 700;
     text-decoration: underline;
-    font-size: 14px;
+    font-size: 19px;
     margin-bottom: 6px;
   }
 
@@ -109,9 +109,9 @@ const EXAM_CSS = `
   .options-row {
     display: flex;
     margin: 3px 0 3px 22px;
-    gap: 40px;
+    gap: 44px;
   }
-  .options-row span { white-space: nowrap; }
+  .options-row span { white-space: normal; }
 
   /* ---------- FILL IN THE BLANKS ---------- */
   .word-bank {
@@ -120,7 +120,7 @@ const EXAM_CSS = `
   }
   .blank {
     display: inline-block;
-    min-width: 90px;
+    min-width: 110px;
     border-bottom: 1px solid #000;
   }
 
@@ -135,7 +135,7 @@ const EXAM_CSS = `
     grid-template-columns: 1fr 1fr;
     row-gap: 5px;
     margin-left: 22px;
-    max-width: 320px;
+    max-width: 380px;
   }
 
   /* ---------- MATCH THE FOLLOWING ---------- */
@@ -147,28 +147,39 @@ const EXAM_CSS = `
   .match-table td {
     padding: 10px 8px;
     vertical-align: middle;
-    font-size: 13.5px;
+    font-size: 18px;
   }
   .match-table td.icon-cell {
-    width: 90px;
+    width: 120px;
   }
   .icon-box {
-    width: 64px;
-    height: 46px;
+    width: 88px;
+    height: 64px;
     border: 1px solid #555;
     background: #eef0f3;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 22px;
     border-radius: 2px;
   }
+
+  /* ---------- PICTURES (inline SVG drawn by the model) ---------- */
+  .q-block svg {
+    min-width: 90px;
+    min-height: 70px;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+  }
+  .icon-box svg { width: 70px; height: 52px; min-width: 0; min-height: 0; }
 
   /* ---------- DIAGRAM / ANSWER SPACE ---------- */
   .diagram-space {
     border: 1px dashed #999;
-    height: 140px;
+    height: 190px;
     margin-top: 8px;
   }
 
@@ -178,8 +189,8 @@ const EXAM_CSS = `
   }
   .answer-lines .line {
     border-bottom: 1px solid #000;
-    height: 20px;
-    margin-bottom: 4px;
+    height: 26px;
+    margin-bottom: 5px;
   }
 
   /* ---------- PAGE FRAME (added by exam-template.js) ----------
@@ -244,10 +255,35 @@ function buildHeaderHtml(headerEl, instructionsEl) {
   return html;
 }
 
+// Handwritten line breaks mean nothing in print. The model sometimes copies them, so:
+//  - <br> inside text becomes a space
+//  - a q-item / tf-item that has no number/letter label and follows an unfinished item
+//    is the wrapped second line of that item -> glue it back to the item above
+const ITEM_LABEL_RE = /^\s*(?:\(?\d{1,3}\s*[).\]:\-]|\(?[a-zA-Z]\s*[).\]]|[\u2022*\-])/;
+const SENTENCE_END_RE = /[.?!:;]\s*$/;
+function joinWrappedLines(root) {
+  root.querySelectorAll(".q-item br, .tf-item br, .q-title br, .options-row span br").forEach((br) => br.replaceWith(" "));
+
+  root.querySelectorAll(".q-body").forEach((body) => {
+    [...body.children].forEach((item) => {
+      if (!item.matches(".q-item, .tf-item")) return;
+      const prev = item.previousElementSibling;
+      if (!prev || !prev.matches(".q-item, .tf-item")) return;
+      const text = item.textContent;
+      if (!text.trim() || ITEM_LABEL_RE.test(text)) return;       // a new numbered item
+      if (SENTENCE_END_RE.test(prev.textContent)) return;         // previous item already finished
+      prev.insertAdjacentHTML("beforeend", " " + item.innerHTML);
+      item.remove();
+    });
+  });
+}
+
 // One image's HTML -> { headerHtml, blocks[] }  (blocks = outerHTML of each .q-block)
-function parseExamFragment(html, isFirstImage) {
+function parseExamFragment(html, imageIndex) {
+  const isFirstImage = imageIndex === 0;
   const doc = new DOMParser().parseFromString("<body>" + html + "</body>", "text/html");
   sanitizeExamNode(doc.body);
+  joinWrappedLines(doc.body);
 
   const headerEl = doc.body.querySelector(".header-grid");
   const instructionsEl = doc.body.querySelector(".instructions");
@@ -258,14 +294,48 @@ function parseExamFragment(html, isFirstImage) {
   // Top-level question blocks (ignore a .q-block nested inside another one)
   let blocks = [...doc.body.querySelectorAll(".q-block")].filter((b) => b.parentElement.closest(".q-block") === null);
 
-  // Fallback: the model skipped the wrapper classes -> keep whatever content it produced
   if (blocks.length === 0) {
+    // Fallback: the model skipped the wrapper classes -> keep whatever content it produced
     blocks = [...doc.body.children].filter(
       (el) => el !== headerEl && el !== instructionsEl && !el.matches("hr") && el.textContent.trim()
     );
     blocks.forEach((b) => b.classList.add("q-block"));
+  } else if (!isFirstImage && !blocks[0].querySelector(".q-head")) {
+    // A question that started on the previous image and goes on here (no heading) -> glued back later
+    blocks[0].setAttribute("data-continued", "1");
   }
   return { headerHtml, blocks: blocks.map((b) => b.outerHTML) };
+}
+
+// A question that continues on the next image is joined to its first part, so the paper
+// reads as one flow (no gap, no second heading).
+function mergeContinuedBlocks(blockHtmls) {
+  const out = [];
+  const toBlock = (html) => {
+    const holder = document.createElement("div");
+    holder.innerHTML = html;
+    return holder.firstElementChild;
+  };
+  for (const html of blockHtmls) {
+    const el = toBlock(html);
+    if (!el) continue;
+    if (el.hasAttribute("data-continued") && out.length) {
+      const prev = toBlock(out[out.length - 1]);
+      const prevBody = [...prev.children].reverse().find((c) => c.classList.contains("q-body"));
+      const body = [...el.children].find((c) => c.classList.contains("q-body"));
+      if (prevBody && body) {
+        [...body.children].forEach((c) => prevBody.appendChild(c));
+        [...el.children].filter((c) => c !== body).forEach((c) => prev.appendChild(c));
+      } else {
+        [...el.children].forEach((c) => prev.appendChild(c));
+      }
+      out[out.length - 1] = prev.outerHTML;
+    } else {
+      el.removeAttribute("data-continued");
+      out.push(el.outerHTML);
+    }
+  }
+  return out;
 }
 
 // ---------- pagination ----------
@@ -287,10 +357,10 @@ async function createMeasureFrame() {
 // rawPages = array (one entry per image, in order) of the HTML the model returned (null = failed image)
 // Returns an array of page HTML strings, ready for preparePdfPages().
 async function buildExamPages(rawPages) {
-  const parsed = rawPages.map((html, index) => (html ? parseExamFragment(html, index === 0) : null));
+  const parsed = rawPages.map((html, index) => (html ? parseExamFragment(html, index) : null));
 
   const headerHtml = parsed[0] ? parsed[0].headerHtml : "";   // header: FIRST image only, page 1 only
-  const blocks = parsed.flatMap((p) => (p ? p.blocks : []));  // questions of all images, in order
+  const blocks = mergeContinuedBlocks(parsed.flatMap((p) => (p ? p.blocks : [])));  // questions of all images, in order
   if (blocks.length === 0) return [];
 
   const frame = await createMeasureFrame();
@@ -311,42 +381,72 @@ async function buildExamPages(rawPages) {
       page.innerHTML = ""; // pages after the first have NO header
     };
 
-    // A question taller than the room left: spread its parts over pages.
-    // (the heading goes with the first part; an MCQ question stays together with its options)
+    // A question that does not fit in the room left on the page is NOT pushed to the next page
+    // (that left blank space). It is spread over pages: as many parts as fit stay here, the
+    // rest continue on the next page. The heading is never left alone at the bottom.
+    const WRAPPER_SELECTOR = ".q-body, .answer-lines, .jumbled-grid, .match-table";
     const splitBlock = (block) => {
       const head = [...block.children].find((c) => c.classList.contains("q-head"));
       const rest = [...block.children].filter((c) => c !== head);
 
-      let wrapper = null;
-      let parts = rest;
-      if (rest.length === 1 && rest[0].children.length > 0) {
-        wrapper = rest[0]; // .q-body, .answer-lines, .jumbled-grid, table ...
-        parts = wrapper.tagName === "TABLE" ? [...wrapper.querySelectorAll("tr")] : [...wrapper.children];
-      }
-
+      // groups = smallest pieces that must stay together: { src: wrapper element | null, nodes: [] }
       const groups = [];
-      parts.forEach((part) => {
-        if (part.classList && part.classList.contains("options-row") && groups.length) groups[groups.length - 1].push(part);
-        else groups.push([part]);
+      rest.forEach((child) => {
+        if (child.matches(WRAPPER_SELECTOR) && child.children.length > 0) {
+          const parts = child.tagName === "TABLE" ? [...child.querySelectorAll("tr")] : [...child.children];
+          parts.forEach((part) => {
+            const last = groups[groups.length - 1];
+            // an MCQ option row stays together with its question
+            if (part.classList.contains("options-row") && last && last.src === child) last.nodes.push(part);
+            else groups.push({ src: child, nodes: [part] });
+          });
+        } else {
+          groups.push({ src: null, nodes: [child] });
+        }
       });
 
-      let shell, shellTarget, placed;
+      const otherQuestionsOnPage = () => page.querySelectorAll(".q-block").length > 0;
+
+      if (groups.length === 0) { // nothing to split (heading only)
+        if (otherQuestionsOnPage()) flushPage();
+        page.appendChild(block);
+        return;
+      }
+
+      let shell, target, currentSrc, placed;
       const startShell = (withHead) => {
         shell = block.cloneNode(false);
         if (withHead && head) shell.appendChild(head);
-        shellTarget = wrapper ? shell.appendChild(wrapper.cloneNode(false)) : shell;
         page.appendChild(shell);
+        target = shell;
+        currentSrc = undefined;
         placed = 0;
+      };
+      const place = (group) => {
+        if (group.src !== currentSrc) {
+          target = group.src ? shell.appendChild(group.src.cloneNode(false)) : shell;
+          currentSrc = group.src;
+        }
+        group.nodes.forEach((node) => target.appendChild(node));
       };
 
       startShell(true);
       groups.forEach((group) => {
-        group.forEach((node) => shellTarget.appendChild(node));
-        if (!fits() && placed > 0) {
-          group.forEach((node) => shellTarget.removeChild(node));
-          flushPage();
-          startShell(false);
-          group.forEach((node) => shellTarget.appendChild(node));
+        const questionsBefore = page.querySelectorAll(".q-block").length - 1; // other questions already on this page
+        place(group);
+        if (!fits()) {
+          const firstPart = placed === 0;
+          if (firstPart && questionsBefore === 0) { placed++; return; } // page has no other question: nothing to gain by moving
+          group.nodes.forEach((node) => node.parentNode.removeChild(node));
+          if (firstPart) {
+            page.removeChild(shell); // not even heading + first part fit -> whole question to a fresh page
+            flushPage();
+            startShell(true);
+          } else {
+            flushPage();             // fill ended here -> rest continues on the next page
+            startShell(false);
+          }
+          place(group);
         }
         placed++;
       });
@@ -361,15 +461,7 @@ async function buildExamPages(rawPages) {
       page.appendChild(block);
       if (fits()) continue;
       page.removeChild(block);
-
-      // Not enough room: try a fresh page first
-      if (hasQuestions()) {
-        flushPage();
-        page.appendChild(block);
-        if (fits()) continue;
-        page.removeChild(block);
-      }
-      splitBlock(block); // taller than a whole page
+      splitBlock(block); // fill the rest of this page, continue on the next
     }
 
     if (page.children.length) flushPage();

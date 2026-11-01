@@ -30,7 +30,8 @@ Rules:
 - Copy question numbers, wording and marks exactly as written; do not invent, solve or add anything.
 - If a question has no marks written, leave <span class="q-marks"></span> empty.
 - Ignore ruled/margin lines, page number, date box and paper background.
-- Pictures that belong to a question: small inline SVG, black ink only.
+- Handwritten line breaks are NOT meaningful: when a question, sentence or option runs onto the next handwritten line only because the paper line ended, join it into ONE q-item / ONE option. Never use <br>. Start a new q-item only where a new number/letter label starts.
+- Pictures that belong to a question: inline SVG, black ink only, with a viewBox and a clearly visible size (about 120-200px wide, thick enough strokes), not tiny.
 Output raw HTML only: no code fences, no explanation.`;
 
 // FIRST image only: its header is used once, on page 1 of the final paper
@@ -41,7 +42,7 @@ If the page has an instruction line (e.g. "Attempt all the Questions."), output 
 
 // Every other image: a continuation of the same paper
 const CONTINUATION_PROMPT = `
-This is a CONTINUATION page of the same paper. Do NOT output any header or instruction line, even if the page shows one; output only the question blocks.`;
+This is a CONTINUATION page of the same paper. Do NOT output any header or instruction line, even if the page shows one; output only the question blocks. If the page begins with the remaining items of a question that started on the previous page (no Q-heading on top), output them in a <div class=\"q-block\"><div class=\"q-body\">...</div></div> WITHOUT a q-head.`;
 
 // Prompt for the image at position `index` (0 = first image)
 const getConversionPrompt = (index) =>
