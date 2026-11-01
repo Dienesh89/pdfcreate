@@ -1,0 +1,19 @@
+{
+  "name": "pdfcreate",
+  "version": "1.0.0",
+  "description": "PDF creation and editing tools",
+  "scripts": {
+    "build": "echo 'No build step required for vanilla HTML/JS project'",
+    "lint": "echo 'No linter configured yet'"
+  },
+  "keywords": [
+    "pdf",
+    "tools",
+    "editor"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  }
+}
