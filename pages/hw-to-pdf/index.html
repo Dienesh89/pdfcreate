@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Create</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/image-picker.css">
+<link rel="stylesheet" href="css/image-preview.css">
+<link rel="stylesheet" href="../../css/puter-auth.css">
+<link rel="stylesheet" href="css/modal.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Puter.js: free AI, no API key (the user signs in with a Puter account) -->
+<script src="https://js.puter.com/v2/"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+<header class="main-header">
+  <a class="logo-group" href="../../index.html" aria-label="PDF Create - Home">
+    <i class="fa-solid fa-file-pdf"></i>
+    <h1>PDF Create</h1>
+  </a>
+  <div class="header-actions">
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Sign out" hidden>
+      <span>Sign out</span>
+    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link active">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+  </aside>
+  <div class="page-content">
+
+<main>
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../../index.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+
+  <!-- ========== Puter sign-in card (hidden once signed in) ========== -->
+  <section class="auth-card" id="authCard">
+    <div class="auth-text">
+      <h2 class="auth-title">Sign in to start &mdash; it's free</h2>
+      <p class="auth-sub">The AI conversion runs on <b>Puter</b>. No API key needed: sign in with a free Puter account and its monthly free allowance covers your pages.</p>
+    </div>
+
+    <button class="auth-btn" id="puterSignInBtn" type="button">
+      <span class="auth-btn-label">Sign in with Puter</span>
+      <span class="spinner" aria-hidden="true"></span>
+    </button>
+
+    <!-- Opens Puter where a free account can be created -->
+    <a class="link-btn" href="https://puter.com" target="_blank" rel="noopener noreferrer">
+      <span>Create a free Puter account</span>
+      <svg class="ext-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+    </a>
+  </section>
+<h2>Handwritten To Pdf</h2>
+  <section class="upload-card">
+    <label class="dropzone" id="dropzone" for="fileInput">
+      <svg class="folder-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="miter" aria-hidden="true">
+        <path d="M6 52V10h20l3 3h29v10"/>
+        <path d="M6 52h14M44 52h14V23"/>
+        <path d="M32 54V30M22 39l10-10 10 10" stroke-linecap="butt"/>
+      </svg>
+      <p class="drop-text"><span class="choose">Choose a file</span> or Drag and Drop here</p>
+      <p class="max-text">Max 3 images</p>
+      <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    </label>
+  </section>
+
+  <h2 class="list-title">Selected images</h2>
+  <ul class="file-list" id="fileList"></ul>
+
+  <button class="convert-btn" id="convertBtn" type="button">Convert to PDF</button>
+  <!-- Modal (initally bhidden)-->
+<div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pm-modal">
+    <div class="pm-head">
+      <h2 class="pm-title" id="pmTitle">Processing images</h2>
+      <p class="pm-sub" id="pmSub"></p>
+    </div>
+    <div class="pm-body" id="pmBody"></div>
+  </div>
+</div>
+
+</main>
+
+<!-- Load order matters: every file can use the ones above it -->
+  </div><!-- /page-content -->
+</div><!-- /app-layout -->
+
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script src="js/config.js"></script>
+<script src="js/dom.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/image-list.js"></script>
+<script src="js/image-sort.js"></script>
+<script src="js/image-preview.js"></script>
+<script src="../../js/puter-ai.js"></script>
+<script src="js/pdf-export.js"></script>
+<script src="js/convert-flow.js"></script>
+<script src="js/main.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

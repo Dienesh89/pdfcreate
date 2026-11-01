@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Edit</title>
+<link rel="stylesheet" href="style.css" type="text/css" media="all" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="pdf-export.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+
+<!-- ========== Header ========== -->
+<header class="main-header">
+  <a class="logo-group" href="../../index.html" aria-label="PDF Create - Home">
+    <i class="fa-solid fa-file-pdf"></i>
+    <h1>PDF Create</h1>
+  </a>
+  <div class="header-actions">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link active">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+  </aside>
+  <div class="page-content">
+
+
+<main class="page">
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../pdf-editor/index.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+
+    <h2 class="page-title">Edit PDF Text</h2>
+  <!-- ========== PDF upload drag & drop area ========== -->
+  <section class="card upload-card">
+    <label class="dropzone" id="dropzone" for="fileInput">
+      <svg class="drop-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 4h7l2 2h9v14H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/>
+        <path d="M12 17V10m0 0-3 3m3-3 3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+      </svg>
+      <p class="drop-text" id="dropText"><span class="link">Choose a file</span> or Drag and Drop here</p>
+      <p class="drop-sub">Max 1 PDF</p>
+      <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden>
+    </label>
+  </section>
+
+  <h3 class="section-title" id="selTitle">Selected PDF</h3>
+  <p class="empty" id="emptyMsg">No PDF selected yet</p>
+
+  <!-- ========== TinyMCE editor view ========== -->
+  <section class="editor-card hidden" id="editorView">
+    <div class="editor-top">
+      <button type="button" class="icon-btn" id="backBtn" aria-label="Choose another PDF" title="Choose another PDF">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <span class="top-divider" aria-hidden="true"></span>
+      <div class="file-ico" aria-hidden="true"><i class="fa-solid fa-file-pdf"></i></div>
+      <div class="file-meta">
+        <span class="file-name" id="editorFileName"></span>
+        <small class="file-sub" id="editorMeta"></small>
+      </div>
+      <button type="button" class="btn save-btn" id="downloadPdfBtn">
+        <i class="fa-solid fa-download"></i><span class="lbl">Download</span>
+      </button>
+    </div>
+    <div class="page-tabs" id="pageTabs"></div>
+    <div class="editor-sheet"><textarea id="editor"></textarea></div>
+    <nav class="quick-bar" id="quickBar" aria-label="Quick formatting">
+      <button type="button" data-cmd="Undo"><i class="fa-solid fa-rotate-left"></i><span>Undo</span></button>
+      <button type="button" data-cmd="Redo"><i class="fa-solid fa-rotate-right"></i><span>Redo</span></button>
+      <button type="button" data-cmd="Bold" data-state="bold"><i class="fa-solid fa-bold"></i><span>Bold</span></button>
+      <button type="button" data-cmd="Italic" data-state="italic"><i class="fa-solid fa-italic"></i><span>Italic</span></button>
+      <button type="button" data-cmd="Underline" data-state="underline"><i class="fa-solid fa-underline"></i><span>Underline</span></button>
+      <button type="button" data-cmd="InsertUnorderedList" data-state="InsertUnorderedList"><i class="fa-solid fa-list-ul"></i><span>List</span></button>
+      <button type="button" id="moreBtn"><i class="fa-solid fa-ellipsis"></i><span>More</span></button>
+    </nav>
+    <p class="editor-hint">Each tab is one A4 page. Your edits are kept when you switch tabs.</p>
+  </section>
+</main>
+
+<!-- ========== PDF ready modal ========== -->
+<div class="modal-backdrop hidden" id="pdfModal">
+  <div class="modal">
+    <h2>PDF ready</h2>
+    <p id="pdfModalText">Tap Download PDF, then choose “Save as PDF”.</p>
+    <button type="button" class="btn" id="pdfModalDownload">Download PDF</button>
+    <button type="button" class="btn ghost" id="pdfModalClose">Close</button>
+  </div>
+</div>
+
+  </div><!-- /page-content -->
+</div><!-- /app-layout -->
+
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script>
+/* =========================================================
+   pdf-recover.js – PRIVATE tool. Do NOT ship this on the public site.
+   ========================================================= */
+async function recoverHiddenPages(file) {
+  const pdfjs = window.pdfjsLib;
+  pdfjs.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+  const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+  const slices = [];
+
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const content = await (await pdf.getPage(p)).getTextContent();
+    const text = content.items.map((it) => it.str).join("").replace(/\s+/g, "");
+    const re = /HW1(\d+)\.(\d+)\.(\d+):/g;
+    let m;
+    while ((m = re.exec(text))) {
+      const start = re.lastIndex;
+      const len = +m[3];
+      const data = text.substr(start, len);
+      const ok = data.length === len && /^[A-Za-z0-9+/=]+$/.test(data);
+      // a page can carry the same slice twice (e.g. after rotating): keep the first intact copy
+      if (ok && !slices.some((s) => s.index === +m[1])) slices.push({ index: +m[1], count: +m[2], data });
+      re.lastIndex = ok ? start + len : start;
+    }
+  }
+
+  if (!slices.length) throw new Error("No hidden data found in this PDF.");
+  slices.sort((a, b) => a.index - b.index);
+  if (slices.length < slices[0].count) throw new Error("Hidden data is incomplete.");
+
+  const payload = slices.map((s) => s.data).join("");
+  const flag = payload[0];
+  const bin = atob(payload.slice(1));
+  let bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+
+  if (flag === "g") {
+    const ds = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    bytes = new Uint8Array(await new Response(ds).arrayBuffer());
+  }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+/* ---------- Page wiring ---------- */
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const dropText = document.getElementById("dropText");
+const DEFAULT_DROP_TEXT = dropText.innerHTML;
+let busy = false;
+const uploadCard = document.querySelector(".upload-card");
+const selTitle = document.getElementById("selTitle");
+const emptyMsg = document.getElementById("emptyMsg");
+const EMPTY_TEXT = emptyMsg.textContent;
+const mainEl = document.querySelector("main");
+const editorView = document.getElementById("editorView");
+const pageTabs = document.getElementById("pageTabs");
+const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+let selectedFile = null;
+
+function setFile(file) {
+  if (!file) return;
+  if (file.type !== "application/pdf" && !/\.pdf$/i.test(file.name)) {
+    alert("Please select a PDF file.");
+    return;
+  }
+  if (busy) return;
+  selectedFile = file;
+  emptyMsg.textContent = file.name;
+  startEdit(); // open the editor right after the PDF is chosen
+}
+
+fileInput.addEventListener("change", () => setFile(fileInput.files[0]));
+
+["dragenter", "dragover"].forEach((ev) =>
+  dropzone.addEventListener(ev, (e) => {
+    e.preventDefault();
+    dropzone.classList.add("over");
+  })
+);
+["dragleave", "drop"].forEach((ev) =>
+  dropzone.addEventListener(ev, (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("over");
+  })
+);
+dropzone.addEventListener("drop", (e) => setFile(e.dataTransfer.files[0]));
+
+/* =========================================================
+   TinyMCE editor
+   Each recovered page = { head, bodyStyle, bodyClass, body }
+   - head  : the page's <style>/<link> tags, injected into the editor
+             iframe so the page looks exactly as it will print
+   - body  : the editable HTML
+   ========================================================= */
+let pages = [];        // parsed pages
+let current = 0;       // index of page shown in the editor
+let editorReady = null; // Promise resolving to the TinyMCE instance
+
+function parsePage(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  doc.querySelectorAll("script").forEach((s) => s.remove());
+  const head = [...doc.head.querySelectorAll("style, link[rel='stylesheet']")]
+    .map((n) => n.outerHTML)
+    .join("\n");
+  return {
+    head,
+    bodyStyle: doc.body.getAttribute("style") || "",
+    bodyClass: doc.body.getAttribute("class") || "",
+    body: doc.body.innerHTML,
+  };
+}
+
+// Rebuild a complete HTML page for pdf-export.js
+function buildPageHtml(p) {
+  const attrs =
+    (p.bodyClass ? ` class="${p.bodyClass.replace(/"/g, "&quot;")}"` : "") +
+    (p.bodyStyle ? ` style="${p.bodyStyle.replace(/"/g, "&quot;")}"` : "");
+  return (
+    '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+    p.head +
+    "</head><body" + attrs + ">" + p.body + "</body></html>"
+  );
+}
+
+function initEditor() {
+  if (editorReady) return editorReady;
+  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  editorReady = tinymce
+    .init({
+      selector: "#editor",
+      height: Math.max(520, Math.round(window.innerHeight * 0.72)),
+      license_key: "gpl",
+      skin: dark ? "oxide-dark" : "oxide",
+      content_css: "default",
+      menubar: false,
+      plugins: "advlist lists link image table code fullscreen searchreplace charmap wordcount",
+      toolbar:
+        "undo redo | blocks fontsize | bold italic underline | bullist | fontfamily strikethrough | " +
+        "forecolor backcolor | alignleft aligncenter alignright alignjustify | " +
+        "numlist outdent indent | table image link | removeformat code fullscreen",
+      toolbar_mode: "sliding",
+      font_size_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 24pt 28pt 36pt",
+      // keep the recovered markup exactly as generated
+      verify_html: false,
+      convert_urls: false,
+      entity_encoding: "raw",
+      branding: false,
+      promotion: false,
+      resize: false,
+      // show the page like an A4 sheet
+      content_style:
+        "html{background:#eef1fb}" +
+        "body{width:210mm;min-height:296.5mm;margin:16px auto;background:#fff;" +
+        "box-shadow:0 6px 24px rgba(30,34,90,.12);border-radius:6px;position:relative}",
+      setup: (ed) => ed.on("NodeChange SelectionChange", syncQuickBar),
+    })
+    .then((editors) => editors[0]);
+  return editorReady;
+}
+
+// Put page i into the editor (page CSS goes into the editor iframe's <head>)
+async function showPage(i) {
+  const editor = await initEditor();
+  current = i;
+  const p = pages[i];
+
+  const head = editor.getDoc().head;
+  head.querySelectorAll("[data-page-head]").forEach((n) => n.remove());
+  const tpl = editor.getDoc().createElement("div");
+  tpl.innerHTML = p.head;
+  [...tpl.children].forEach((n) => {
+    n.setAttribute("data-page-head", "1");
+    head.appendChild(n);
+  });
+
+  // Last in <head> so it beats the page's own CSS (pages often set overflow:hidden / height:100%),
+  // which would otherwise block scrolling inside the editor.
+  const fix = editor.getDoc().createElement("style");
+  fix.setAttribute("data-page-head", "1");
+  fix.textContent =
+    "html{overflow:auto!important;height:auto!important;-webkit-overflow-scrolling:touch}" +
+    "body{overflow:visible!important;height:auto!important;min-height:296.5mm!important;" +
+    "width:210mm!important;max-width:none!important;margin:16px auto!important}";
+  head.appendChild(fix);
+
+  editor.setContent(p.body);
+  const b = editor.getBody();
+  p.bodyClass ? b.setAttribute("class", "mce-content-body " + p.bodyClass) : null;
+  p.bodyStyle ? b.setAttribute("style", p.bodyStyle) : b.removeAttribute("style");
+  editor.undoManager.clear();
+  editor.setDirty(false);
+
+  [...pageTabs.children].forEach((btn, idx) => btn.classList.toggle("active", idx === i));
+}
+
+// Save the editor's content back into pages[current]
+function saveCurrentPage() {
+  if (!editorReady || !pages[current]) return;
+  const ed = tinymce.get("editor");
+  if (ed) pages[current].body = ed.getContent();
+}
+
+function renderTabs() {
+  pageTabs.innerHTML = "";
+  pages.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = "Page " + (i + 1);
+    b.addEventListener("click", async () => {
+      if (i === current) return;
+      saveCurrentPage();
+      await showPage(i);
+    });
+    pageTabs.appendChild(b);
+  });
+}
+
+async function openEditor(pageHtmlList) {
+  pages = pageHtmlList.map(parsePage);
+  document.getElementById("editorFileName").textContent = selectedFile.name;
+  document.getElementById("editorMeta").textContent =
+    pages.length + (pages.length === 1 ? " page" : " pages") + " \u2022 Editing";
+  uploadCard.classList.add("hidden");
+  selTitle.classList.add("hidden");
+  emptyMsg.classList.add("hidden");
+  editorView.classList.remove("hidden");
+  mainEl.classList.add("editing");
+  renderTabs();
+  await showPage(0);
+  editorView.scrollIntoView({ behavior: "smooth" });
+}
+
+function closeEditor() {
+  saveCurrentPage();
+  editorView.classList.add("hidden");
+  uploadCard.classList.remove("hidden");
+  selTitle.classList.remove("hidden");
+  emptyMsg.classList.remove("hidden");
+  emptyMsg.textContent = EMPTY_TEXT;
+  mainEl.classList.remove("editing");
+  pages = [];
+  current = 0;
+  // reset the chooser so another PDF can be picked (even the same file again)
+  selectedFile = null;
+  fileInput.value = "";
+  dropText.innerHTML = DEFAULT_DROP_TEXT;
+}
+
+/* ---------- Edit PDF (runs automatically once a PDF is selected) ---------- */
+async function startEdit() {
+  if (!selectedFile || busy) return;
+  busy = true;
+  dropzone.classList.add("over");
+  dropText.textContent = "Reading PDF…";
+  try {
+    const recovered = await recoverHiddenPages(selectedFile);
+    const list = Array.isArray(recovered) ? recovered : [recovered];
+    await openEditor(list);
+  } catch (err) {
+    alert("Error: " + err.message);
+    selectedFile = null;
+    fileInput.value = "";
+    dropText.innerHTML = DEFAULT_DROP_TEXT;
+    emptyMsg.textContent = EMPTY_TEXT;
+  } finally {
+    busy = false;
+    dropzone.classList.remove("over");
+  }
+}
+
+document.getElementById("backBtn").addEventListener("click", closeEditor);
+
+/* ---------- Bottom quick-format bar ---------- */
+const quickBar = document.getElementById("quickBar");
+function syncQuickBar() {
+  const ed = tinymce.get("editor");
+  if (!ed) return;
+  quickBar.querySelectorAll("[data-state]").forEach((b) => {
+    let on = false;
+    try { on = ed.queryCommandState(b.dataset.state); } catch (e) {}
+    b.classList.toggle("on", !!on);
+  });
+}
+quickBar.querySelectorAll("[data-cmd]").forEach((b) =>
+  b.addEventListener("click", () => {
+    const ed = tinymce.get("editor");
+    if (!ed) return;
+    ed.focus();
+    ed.execCommand(b.dataset.cmd);
+    syncQuickBar();
+  })
+);
+document.getElementById("moreBtn").addEventListener("click", (e) => {
+  const open = editorView.classList.toggle("show-tools");
+  e.currentTarget.classList.toggle("on", open);
+});
+
+/* ---------- Opened from "Edit PDF" in a generator's download popup ---------- */
+(async function openGeneratedPdf() {
+  if (new URLSearchParams(location.search).get("generated") !== "1") return;
+  let list = null;
+  try {
+    list = JSON.parse(sessionStorage.getItem("pdfcreate.generatedPages") || "null");
+    sessionStorage.removeItem("pdfcreate.generatedPages"); // use once
+  } catch (e) {}
+  if (!Array.isArray(list) || !list.length) return;
+  busy = true;
+  selectedFile = { name: "Generated PDF.pdf" };
+  try {
+    await openEditor(list);
+  } catch (err) {
+    alert("Error: " + err.message);
+    selectedFile = null;
+  } finally {
+    busy = false;
+  }
+})();
+
+/* ---------- Download PDF ---------- */
+const pdfModal = document.getElementById("pdfModal");
+const originalTitle = document.title;
+
+function closePdfModal() {
+  pdfModal.classList.add("hidden");
+  discardPreparedPdf();
+  document.title = originalTitle;
+}
+
+downloadPdfBtn.addEventListener("click", async () => {
+  saveCurrentPage();
+  downloadPdfBtn.disabled = true;
+  const lbl = downloadPdfBtn.querySelector(".lbl");
+  const oldLabel = lbl.textContent;
+  lbl.textContent = "Preparing…";
+  try {
+    // re-embeds the hidden source slice, so the new PDF can be edited again later
+    await preparePdfPages(pages.map(buildPageHtml));
+    document.getElementById("pdfModalText").textContent =
+      pages.length + (pages.length === 1 ? " page" : " pages") +
+      " ready. Tap Download PDF, then choose “Save as PDF”.";
+    pdfModal.classList.remove("hidden");
+  } catch (err) {
+    console.error(err);
+    alert("Error: " + (err.message || "Could not build the PDF."));
+  } finally {
+    downloadPdfBtn.disabled = false;
+    lbl.textContent = oldLabel;
+  }
+});
+
+// The tap here is the user gesture that opens the print / save dialog
+document.getElementById("pdfModalDownload").addEventListener("click", () => {
+  document.title = selectedFile.name.replace(/\.pdf$/i, "") + "-edited";
+  printPreparedPdf();
+});
+document.getElementById("pdfModalClose").addEventListener("click", closePdfModal);
+</script>
+</body>
+</html>

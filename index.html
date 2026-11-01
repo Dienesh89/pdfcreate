@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Create - Dashboard</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css"  />
+</head>
+<body>
+    <!-- Main Header -->
+    <header>
+        <div class="logo-group">
+            <i class="fa-solid fa-file-pdf" style="color: white; font-size: 1.8rem;"></i>
+            <h1>PDF Create</h1>
+        </div>
+        <!-- Hamburger Menu Button for Mobile -->
+        <div class="header-actions">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        </div>
+    </header>
+    <div class="app-layout">
+        <!-- Sidebar Navigation (Collapsible under header on mobile) -->
+        <aside class="sidebar" id="sidebar">
+            <span class="sidebar-title">Tools Menu</span>
+            <a href="pages/exam-paper-maker/index.html" class="nav-link">
+                <i class="fa-solid fa-file-signature"></i>
+                <span>Exam Paper Maker</span>
+            </a>
+            <a href="pages/syllabus/index.html" class="nav-link">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Syllabus Maker</span>
+            </a>
+            <a href="pages/hw-to-pdf/index.html" class="nav-link">
+                <i class="fa-solid fa-pen-nib"></i>
+                <span>Handwritten to PDF</span>
+            </a>
+            <a href="pages/pdf-editor/index.html" class="nav-link">
+                <i class="fa-solid fa-sliders"></i>
+                <span>PDF Editor</span>
+            </a>
+        </aside>
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="section-header">
+                <h2>All Features</h2>
+                <p>Select a tool to transform, edit, or generate your PDF documents instantly.</p>
+            </div>
+            <!-- Cards Grid Container -->
+            <div class="cards-grid">
+                <!-- Card 1: Exam Paper Maker -->
+                <a href="pages/exam-paper-maker/index.html" class="card card-1">
+                    <div>
+                        <div class="card-icon">
+                            <i class="fa-solid fa-file-signature"></i>
+                        </div>
+                        <h3 class="card-title">Exam Paper Maker</h3>
+                        <div class="badge">
+                            <i class="fa-solid fa-print"></i> Print ready
+                        </div>
+                        <p class="card-description">
+                            Create <strong>Consistent</strong> exam papers just from handwritten exam paper images.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Get Started</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+                <!-- Card 2: Syllabus Maker -->
+                <a href="pages/syllabus/index.html" class="card card-2">
+                    <div>
+                        <div class="card-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <h3 class="card-title">Syllabus Maker</h3>
+                        <div class="badge">
+                            <i class="fa-solid fa-print"></i> Print ready
+                        </div>
+                        <p class="card-description">
+                            Create <strong>Consistent</strong> exam Syllabus just from handwritten syllabus image.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Get Started</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+                <!-- Card 3: Handwritten to PDF -->
+                <a href="pages/hw-to-pdf/index.html" class="card card-3">
+                    <div>
+                        <div class="card-icon">
+                            <i class="fa-solid fa-pen-nib"></i>
+                        </div>
+                        <h3 class="card-title">Handwritten to PDF</h3>
+                        <div class="badge">
+                            <i class="fa-solid fa-bolt"></i> Instant Clean-Up
+                        </div>
+                        <p class="card-description">
+                            Convert handwritten notes, assignments, and scanned pages into clear, beautifully formatted, and print-ready PDF documents effortlessly.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Get Started</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+                <!-- Card 4: PDF Editor -->
+                <a href="pages/pdf-editor/index.html" class="card card-4">
+                    <div>
+                        <div class="card-icon">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <h3 class="card-title">PDF Editor</h3>
+                        <div class="badge">
+                            <i class="fa-solid fa-crop-simple"></i> Multi-Tool
+                        </div>
+                        <p class="card-description">
+                            Edit text, rotate, zoom, and move page content effortlessly. Change orientation and resize page layouts in seconds.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Get Started</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </main>
+    </div>
+    <script src="js/script.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

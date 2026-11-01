@@ -1,0 +1,188 @@
+/* Edit PDF Text page – same look as the "Edit Other Things" page (pdf-editor-full) */
+:root {
+  --bg: #f5f6fb;
+  --ink: #1a1a2e;
+  --muted: #5b5f7a;
+  --blue: #2563eb;
+  --violet: #7c3aed;
+  --line: #e3e5f1;
+  --surface: #ffffff;
+  --head-grad: linear-gradient(90deg, #2563eb, #7c3aed);
+  --card-shadow: 0 10px 30px rgba(30, 34, 90, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1120; --ink: #eceefb; --muted: #a1a6c4; --blue: #60a5fa;
+    --line: #2a2e4a; --surface: #181b30; --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden], .hidden { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+/* Layout */
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 5vw, 28px) 48px;
+}
+.page.editing { max-width: 1000px; }
+.page-title {
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 8px 0 22px;
+}
+.section-title { font-size: 1.15rem; font-weight: 700; margin: 30px 0 14px 6px; }
+.card {
+  background: var(--surface);
+  border-radius: 28px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: var(--card-shadow);
+  margin-bottom: 22px;
+}
+
+/* Upload */
+.upload-card { padding: clamp(14px, 4vw, 22px); }
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 44px 16px 36px;
+  border: 3px dashed var(--ink);
+  border-radius: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.dropzone.over { background: rgba(37, 99, 235, 0.1); border-color: var(--blue); }
+.dropzone:focus-within { outline: 3px solid var(--blue); outline-offset: 3px; }
+.drop-icon { width: 64px; height: 64px; color: var(--ink); margin-bottom: 18px; }
+.drop-text { font-size: 1.1rem; }
+.drop-text .link { color: var(--blue); font-weight: 700; }
+.drop-sub { font-size: 1rem; margin-top: 8px; }
+.empty { text-align: center; color: var(--muted); font-size: 1.1rem; margin: 28px 0 8px; overflow-wrap: anywhere; }
+
+/* Pill buttons (same look as the Save / Convert buttons) */
+.btn {
+  border: 0; border-radius: 999px;
+  padding: 10px 22px;
+  background: var(--head-grad); color: #fff;
+  font: inherit; font-size: 1rem; font-weight: 800;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+.btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.btn.ghost {
+  background: transparent; color: var(--ink);
+  border: 2px solid var(--line); box-shadow: none;
+}
+
+/* Editor card */
+.page.editing { max-width: 1000px; padding-top: 16px; }
+.page.editing .page-title, .page.editing .page-back { display: none; }
+.editor-card {
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  overflow: clip;
+  scroll-margin-top: 90px;
+}
+.editor-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px clamp(12px, 3vw, 20px);
+  border-bottom: 1px solid var(--line);
+}
+.icon-btn {
+  flex: none; width: 42px; height: 42px; border-radius: 50%;
+  border: 0; background: transparent; color: var(--ink);
+  font-size: 1.15rem; cursor: pointer; transition: background 0.15s;
+}
+.icon-btn:hover, .icon-btn:focus-visible { background: rgba(37, 99, 235, 0.1); color: var(--blue); outline: none; }
+.top-divider { flex: none; width: 1px; height: 32px; background: var(--line); }
+.file-ico {
+  flex: none; width: 42px; height: 42px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: var(--head-grad); color: #fff; font-size: 1.2rem;
+}
+.file-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.file-name {
+  font-weight: 800; font-size: 1.02rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.file-sub { color: var(--muted); font-size: 0.82rem; }
+.save-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 0.95rem; }
+
+.page-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px clamp(12px, 3vw, 20px) 0; }
+.page-tabs:empty { display: none; }
+.page-tabs button {
+  flex: none; padding: 6px 16px; border-radius: 999px;
+  border: 1.5px solid var(--line); background: transparent; color: var(--muted);
+  font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+}
+.page-tabs button.active { background: var(--head-grad); color: #fff; border-color: transparent; }
+
+.editor-sheet { padding: 12px clamp(8px, 2vw, 16px); }
+/* TinyMCE: compact rounded toolbar like a modern doc editor */
+.editor-sheet .tox-tinymce { border: 0 !important; border-radius: 18px !important; }
+.editor-sheet .tox .tox-editor-header {
+  background: color-mix(in srgb, var(--blue) 6%, var(--surface)) !important;
+  border-radius: 16px; box-shadow: none !important; padding: 4px !important;
+  margin-bottom: 10px;
+}
+.editor-sheet .tox .tox-toolbar, .editor-sheet .tox .tox-toolbar__primary,
+.editor-sheet .tox .tox-toolbar-overlord { background: transparent !important; }
+.editor-sheet .tox .tox-statusbar { display: none; }
+/* on phones show only the main toolbar until "More" is tapped */
+@media (max-width: 768px) {
+  .editor-card:not(.show-tools) .tox .tox-editor-header { display: none !important; }
+}
+
+.quick-bar {
+  position: sticky; bottom: 0; z-index: 5;
+  display: flex; gap: 6px; overflow-x: auto;
+  padding: 10px clamp(10px, 3vw, 18px) calc(10px + env(safe-area-inset-bottom));
+  background: var(--surface); border-top: 1px solid var(--line);
+}
+.quick-bar button {
+  flex: 1 0 46px; min-width: 46px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 6px; border: 0; border-radius: 14px;
+  background: color-mix(in srgb, var(--blue) 6%, var(--surface)); color: var(--ink);
+  font: inherit; font-size: 0.7rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.quick-bar button i { font-size: 1.05rem; }
+.quick-bar button:active { transform: scale(0.95); }
+.quick-bar button.on { background: var(--head-grad); color: #fff; }
+.editor-hint { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 10px 16px 14px; }
+
+@media (max-width: 480px) {
+  .save-btn { padding: 10px 14px; }
+  .save-btn .lbl { display: none; }
+  .top-divider { display: none; }
+}
+
+/* PDF-ready modal */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(10, 12, 30, 0.55);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.modal {
+  background: var(--surface); color: var(--ink);
+  border-radius: 26px; padding: 28px 24px; width: min(420px, 100%);
+  text-align: center; box-shadow: var(--card-shadow);
+}
+.modal h2 { margin: 0 0 8px; }
+.modal p { margin: 0 0 20px; color: var(--muted); }
+.modal .btn { width: 100%; margin-bottom: 10px; font-size: 1.1rem; padding: 14px; }

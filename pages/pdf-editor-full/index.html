@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Rotate PDF – PDF Create</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/rotate.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+
+<header class="main-header">
+  <a class="logo-group" href="../../index.html" aria-label="PDF Create - Home">
+    <i class="fa-solid fa-file-pdf"></i>
+    <h1>PDF Create</h1>
+  </a>
+  <div class="header-actions">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link active">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+  </aside>
+  <div class="page-content">
+
+<main class="page">
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../pdf-editor/index.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+
+  <h2 class="page-title">Edit PDF</h2>
+
+  <!-- Upload card -->
+  <section class="card upload-card" id="uploadCard">
+    <label class="dropzone" id="dropzone" for="fileInput">
+      <svg class="drop-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 4h7l2 2h9v14H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/>
+        <path d="M12 17V10m0 0-3 3m3-3 3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+      </svg>
+      <p class="drop-text"><span class="link">Choose a file</span> or Drag and Drop here</p>
+      <p class="drop-sub">Max 1 PDF</p>
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+    </label>
+  </section>
+
+  <h3 class="section-title">Selected PDF</h3>
+  <p class="empty" id="emptyMsg">No PDF selected yet</p>
+
+  <p class="msg" id="msg" role="alert" hidden></p>
+
+  <!-- Editor: fills the whole screen, nothing to scroll -->
+  <div id="editor" class="app" hidden>
+
+    <!-- Top bar: close · file · reset · save -->
+    <div class="topbar">
+      <div class="file-row" id="fileRow" hidden>
+        <button class="icon-btn" id="removeBtn" type="button" aria-label="Remove PDF">✕</button>
+        <div class="file-badge">PDF</div>
+        <div class="file-meta">
+          <div class="file-name" id="fileName"></div>
+          <div class="file-info" id="fileInfo"></div>
+        </div>
+      </div>
+      <button class="icon-btn" id="resetBtn" type="button" aria-label="Reset angle, zoom and position" title="Reset angle, zoom and position">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="primary-btn" id="goBtn" type="button" disabled>Save</button>
+    </div>
+
+    <!-- Preview takes all the free space -->
+    <div class="stage-area">
+      <div class="stage-wrap" id="stageWrap">
+        <div class="stage" id="stage">
+          <div class="content" id="content"></div>
+          <div class="grid" aria-hidden="true"></div>
+          <div class="spinner" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="pager" id="pager">
+        <button class="icon-btn" id="prevBtn" type="button" aria-label="Previous page">‹</button>
+        <label class="page-jump" for="pageInput">Page
+          <input id="pageInput" type="number" inputmode="numeric" min="1" value="1" aria-label="Go to page">
+          <span id="pageTotal">/ 1</span>
+        </label>
+        <button class="icon-btn" id="nextBtn" type="button" aria-label="Next page">›</button>
+      </div>
+
+      <p class="hint">Drag to move · pinch to zoom · twist with two fingers to rotate</p>
+    </div>
+
+    <!-- Bottom dock: one tool at a time, always on screen -->
+    <div class="dock">
+      <div class="tool-area">
+
+        <section class="tool-panel" id="panel-rotate" data-panel="rotate" role="tabpanel" aria-label="Rotate">
+          <div class="slider-head"><span>Angle</span><output id="angleOut">0°</output></div>
+          <div class="slider-line">
+            <button class="icon-btn" id="rotLeft" type="button" aria-label="Rotate 90° left" title="90° left">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7H4V4M4.5 7.5A8 8 0 1 1 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <input id="angleSlider" type="range" min="-180" max="180" step="0.1" value="0" aria-label="Angle">
+            <button class="icon-btn" id="rotRight" type="button" aria-label="Rotate 90° right" title="90° right">
+              <svg viewBox="0 0 24 24" aria-hidden="true" style="transform:scaleX(-1)"><path d="M7 7H4V4M4.5 7.5A8 8 0 1 1 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="tool-panel" id="panel-zoom" data-panel="zoom" role="tabpanel" aria-label="Zoom" hidden>
+          <div class="slider-head"><span>Zoom</span><output id="zoomOut">100%</output></div>
+          <div class="slider-line">
+            <input id="zoomSlider" type="range" min="0.25" max="6" step="0.01" value="1" aria-label="Zoom">
+          </div>
+        </section>
+
+        <section class="tool-panel" id="panel-move" data-panel="move" role="tabpanel" aria-label="Move" hidden>
+          <div class="nudge-pad">
+            <button class="nudge left" type="button" data-dx="-1" data-dy="0" aria-label="Move content left">◀</button>
+            <button class="nudge up" type="button" data-dx="0" data-dy="-1" aria-label="Move content up">▲</button>
+            <button class="nudge down" type="button" data-dx="0" data-dy="1" aria-label="Move content down">▼</button>
+            <button class="nudge right" type="button" data-dx="1" data-dy="0" aria-label="Move content right">▶</button>
+          </div>
+          <span class="nudge-note">Tap to nudge, hold to keep moving</span>
+        </section>
+
+        <section class="tool-panel" id="panel-text" data-panel="text" role="tabpanel" aria-label="Edit text" hidden>
+          <div class="edit-block">
+            <button class="tool-btn wide" id="editToggle" type="button" aria-pressed="false" aria-label="Edit text">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Edit text</span>
+            </button>
+            <div class="edit-panel" id="editPanel" hidden>
+              <p class="edit-hint" id="editHint">Tap any text on the page and type. Size and color options appear here.</p>
+              <div id="editForm" hidden>
+                <div class="edit-row">
+                  <label>Size <input id="editSize" type="number" min="2" max="300" step="0.5" inputmode="decimal"></label>
+                  <label>Color <input id="editColor" type="color" value="#000000"></label>
+                </div>
+                <div class="edit-actions">
+                  <button type="button" id="editRevert">Revert</button>
+                  <button type="button" id="editDelete">Delete</button>
+                  <button type="button" id="editDone" class="on">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tool-panel page-panel" id="panel-page" data-panel="page" role="tabpanel" aria-label="Page options" hidden>
+          <label class="field">
+            <span>Page size</span>
+            <select id="sizeSel">
+              <option value="original">Original size</option>
+              <option value="a4">A4</option>
+              <option value="a3">A3</option>
+              <option value="a5">A5</option>
+              <option value="letter">Letter</option>
+              <option value="legal">Legal</option>
+            </select>
+          </label>
+
+          <div class="field">
+            <span>Orientation</span>
+            <div class="seg" id="orientSeg" role="radiogroup" aria-label="Orientation">
+              <button type="button" class="on" data-v="original" role="radio" aria-checked="true">Original</button>
+              <button type="button" data-v="portrait" role="radio" aria-checked="false">Portrait</button>
+              <button type="button" data-v="landscape" role="radio" aria-checked="false">Landscape</button>
+            </div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="allChk" checked>
+            <span>Apply to all pages</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="fitChk" checked>
+            <span>Shrink content to fit inside the page</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="flatChk">
+            <span>Permanently remove original text under my edits (edited pages become images)</span>
+          </label>
+        </section>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Tools">
+        <button class="tab on" type="button" role="tab" data-tab="rotate" aria-selected="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7H4V4M4.5 7.5A8 8 0 1 1 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Rotate</span>
+        </button>
+        <button class="tab" type="button" role="tab" data-tab="zoom" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Zoom</span>
+        </button>
+        <button class="tab" type="button" role="tab" data-tab="move" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Move</span>
+        </button>
+        <button class="tab" type="button" role="tab" data-tab="text" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Text</span>
+        </button>
+        <button class="tab" type="button" role="tab" data-tab="page" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM15 3v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span>Page</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</main>
+
+  </div><!-- /page-content -->
+</div><!-- /app-layout -->
+
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

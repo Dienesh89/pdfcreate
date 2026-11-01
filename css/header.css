@@ -1,0 +1,35 @@
+/* Shared site header - same look as the home page (index.html) header.
+   Linked from every page inside /pages/*, loaded AFTER each page's own CSS. */
+header.main-header {
+  padding: 18px clamp(18px, 5vw, 56px);
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+header.main-header .logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+header.main-header .logo-group i {
+  color: #fff;
+  font-size: 1.8rem;
+}
+header.main-header h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
