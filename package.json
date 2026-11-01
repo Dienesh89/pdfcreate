@@ -1,0 +1,21 @@
+{
+  "name": "pdfcreate",
+  "version": "1.0.0",
+  "description": "Tools that turn photos of handwritten pages into print-ready A4 PDFs",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build step required for static site'",
+    "lint": "echo 'No linter configured'",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "pdf",
+    "ocr",
+    "handwriting"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/speed-insights": "^1.1.0"
+  }
+}
