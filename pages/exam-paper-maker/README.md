@@ -30,3 +30,15 @@ js/                   (loaded in this order from index.html)
 ## Flow
 
 Convert button -> signed in to Puter? (popup if not) -> `prepareImagesForAi` -> `convertImagesToHtml` -> PDF
+
+## Layout (what the PDF looks like)
+
+`exam-template.js` holds all the styling. The AI only transcribes; the template draws:
+header (school / exam / `Sub: X | Class: Y`) -> Name / Roll No / Date box -> instruction line -> questions.
+Each question: numbered bold title with dotted rule and the marks in a circle.
+Question types the AI can choose (listed in `config.js`): column items (`items-2`, `items-4`, `spaced`),
+vertical sums (`calc-grid` / `calc`, `has-carry`), division pills (`div-grid`), shape rows (`shape-row`),
+fill-in with choices (`fill`), draw boxes (`draw-grid`), table lines (`table-lines`), plus MCQ, true/false,
+jumbled, match, answer lines and diagram space.
+Question numbers are tidied in code (`tidyQuestionBlocks`: "1-" -> "1.", "B)" -> "6-B.", "Q-" -> next number).
+Every page gets a footer "School - Class Subject ... Page X of N" (`pageFooterHtml`).
