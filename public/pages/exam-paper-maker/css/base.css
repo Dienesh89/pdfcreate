@@ -1,0 +1,68 @@
+:root {
+  --bg: #fff8e1;
+  --surface: #ffffff;
+  --text: #1b1d2e;
+  --muted: #5d6179;
+  --line: #f1e2b8;
+  --purple: #f59e0b;
+  --blue: #e8431c;
+  --head-grad: linear-gradient(90deg, #e8431c, #f59e0b);
+  --grad: linear-gradient(90deg, #e8431c, #f59e0b);
+  --shadow: 0 8px 28px rgba(30, 35, 90, 0.12);
+  --field: #f0f0f0;
+  --field-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  --ok: #16a34a;
+  --err: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1410;
+    --surface: #2a1f17;
+    --text: #fff3dc;
+    --muted: #d9c3a5;
+    --line: #4a3626;
+    --purple: #fcd34d;
+    --blue: #ffb347;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    --field: #3a2b1f;
+    --field-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial,
+    sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px clamp(18px, 5vw, 56px);
+  background: var(--head-grad);
+}
+header h1, header .site-name {
+  display: block;
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px clamp(14px, 4vw, 24px) 40px;
+}
+
+
+/* main page heading (was an h2; now the page's h1 for SEO, same look) */
+h1.page-h1 { font-size: 1.5em; margin: .83em 0; }

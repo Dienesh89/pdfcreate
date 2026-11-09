@@ -1,0 +1,59 @@
+/* Shared "add files" experience: dropzone + sortable file list + action bar.
+   Used by Merge PDF and by every image-to-PDF page. No blur / heavy effects on purpose. */
+:root {
+  --fl-card: #ffffff; --fl-soft: #fffdf5; --fl-ink: #0f172a; --fl-muted: #64748b;
+  --fl-line: #f1e2b8; --fl-primary: #e8431c; --fl-hl: #fff1d0;
+  --fl-grad: linear-gradient(90deg, #e8431c, #f59e0b);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --fl-card: #2a1f17; --fl-soft: #33261c; --fl-ink: #fff3dc; --fl-muted: #d9c3a5; --fl-line: #4a3626; --fl-hl: #3a2b1f; }
+}
+.fl-panel { background: var(--fl-card); border: 1px solid var(--fl-line); border-radius: 18px; padding: 20px; box-shadow: 0 4px 14px rgba(15,23,42,.05); margin-bottom: 20px; }
+.fl-panel[hidden], .fl-bar[hidden], .fl-empty[hidden] { display: none !important; }
+
+.fl-drop { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 34px 16px; border: 2px dashed #f0b27a; border-radius: 14px; cursor: pointer; text-align: center; color: var(--fl-ink); transition: background .2s, border-color .2s; }
+.fl-drop:hover, .fl-drop.fl-drag { background: var(--fl-hl); border-color: var(--fl-primary); }
+.fl-drop i { font-size: 2rem; color: var(--fl-primary); }
+.fl-drop p { margin: 0; font-size: 1rem; }
+.fl-drop small { color: var(--fl-muted); font-size: .85rem; }
+.fl-link { color: var(--fl-primary); font-weight: 700; }
+
+.fl-title { font-size: 1.05rem; font-weight: 800; margin: 4px 0 12px; color: var(--fl-ink); }
+.fl-empty { color: var(--fl-muted); font-size: .95rem; margin: 0 0 20px; }
+
+.fl-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; position: relative; }
+.fl-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--fl-line); border-radius: 14px; background: var(--fl-soft); color: var(--fl-ink); }
+.fl-item.fl-dragging { position: relative; z-index: 5; background: var(--fl-card); border-color: var(--fl-primary); box-shadow: 0 8px 20px rgba(15,23,42,.18); }
+body.fl-sorting { -webkit-user-select: none; user-select: none; cursor: grabbing; }
+.fl-handle { flex: none; border: 0; background: none; color: var(--fl-muted); padding: 8px 6px; cursor: grab; touch-action: none; font-size: 1rem; border-radius: 8px; }
+.fl-handle:hover { color: var(--fl-ink); }
+.fl-thumb { width: 48px; height: 62px; flex: none; border-radius: 6px; background: #fff; border: 1px solid var(--fl-line); display: grid; place-items: center; color: var(--fl-primary); font-weight: 800; font-size: .7rem; overflow: hidden; padding: 0; }
+.fl-thumb canvas, .fl-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fl-thumb-btn { cursor: zoom-in; }
+.fl-handle:focus-visible, .fl-thumb-btn:focus-visible, .fl-btn:focus-visible { outline: 3px solid var(--fl-primary); outline-offset: 2px; }
+.fl-meta { flex: 1; min-width: 0; }
+.fl-name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-info { color: var(--fl-muted); font-size: .82rem; }
+.fl-actions { display: flex; gap: 6px; flex: none; }
+.fl-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--fl-line); background: var(--fl-card); color: var(--fl-ink); cursor: pointer; font-size: .9rem; display: grid; place-items: center; padding: 0; transition: border-color .2s, color .2s; }
+.fl-btn:hover:not(:disabled) { border-color: var(--fl-primary); color: var(--fl-primary); }
+.fl-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+.fl-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.fl-summary { color: var(--fl-muted); font-size: .92rem; font-weight: 600; }
+.fl-bar-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.fl-primary-btn { padding: 13px 26px; border: 0; border-radius: 999px; background: var(--fl-grad); color: #fff; font-size: 1rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: filter .2s, transform .1s; }
+.fl-primary-btn:hover:not(:disabled) { filter: brightness(1.06); }
+.fl-primary-btn:active:not(:disabled) { transform: scale(.98); }
+.fl-primary-btn:disabled { opacity: .45; cursor: not-allowed; }
+.fl-ghost-btn { padding: 11px 20px; border: 1.5px solid var(--fl-line); border-radius: 999px; background: transparent; color: var(--fl-muted); font-weight: 700; font-size: .95rem; cursor: pointer; }
+.fl-ghost-btn:hover { border-color: var(--fl-primary); color: var(--fl-primary); }
+
+@media (max-width: 520px) {
+  .fl-panel { padding: 14px; }
+  .fl-item { gap: 8px; padding: 8px; }
+  .fl-btn { width: 32px; height: 32px; }
+  .fl-actions { gap: 4px; }
+  .fl-bar-btns { width: 100%; }
+  .fl-bar-btns > * { flex: 1; justify-content: center; }
+}

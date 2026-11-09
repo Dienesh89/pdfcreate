@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merge PDF Files Online – Free & Private | PDF Create</title>
+<meta name="description" content="Combine several PDF files into one. Drag to reorder and download. Merging happens in your browser, so your files are never uploaded.">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/pages/merge-pdf/index.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#e8431c">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://YOUR-DOMAIN.com/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDF Create">
+<meta property="og:title" content="Merge PDF Files Online – Free & Private | PDF Create">
+<meta property="og:description" content="Combine several PDF files into one. Drag to reorder and download. Merging happens in your browser, so your files are never uploaded.">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/pages/merge-pdf/index.html">
+<meta property="og:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Merge PDF Files Online – Free & Private | PDF Create">
+<meta name="twitter:description" content="Combine several PDF files into one. Drag to reorder and download. Merging happens in your browser, so your files are never uploaded.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PDF Create",
+          "item": "https://YOUR-DOMAIN.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "All Features",
+          "item": "https://YOUR-DOMAIN.com/features.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Merge PDF",
+          "item": "https://YOUR-DOMAIN.com/pages/merge-pdf/index.html"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Merge PDF – PDF Create",
+      "url": "https://YOUR-DOMAIN.com/pages/merge-pdf/index.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any (web browser)",
+      "description": "Combine several PDF files into one. Drag to reorder and download. Merging happens in your browser, so your files are never uploaded.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="../../css/pdf-tools.css">
+<link rel="stylesheet" href="../../css/file-list.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+<header class="main-header">
+  <a class="logo-group" href="../../features.html" aria-label="PDF Create - All Features">
+    <i class="fa-solid fa-file-pdf"></i>
+    <span class="site-name">PDF Create</span>
+  </a>
+  <div class="header-actions">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+    <a href="../merge-pdf/index.html" class="nav-link active">
+      <i class="fa-solid fa-object-group"></i>
+      <span>Merge PDF</span>
+    </a>
+    <a href="../split-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-scissors"></i>
+      <span>Split PDF</span>
+    </a>
+  </aside>
+  <div class="page-content">
+<main class="tool">
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../../features.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+  <h1>Merge PDF</h1>
+  <p class="sub">Combine several PDF files into one. Files stay on your device.</p>
+  <section class="fl-panel">
+    <label class="fl-drop" id="dropzone" for="fileInput">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p><span class="fl-link">Choose PDFs</span> or drag and drop here</p>
+      <small>Add two or more PDF files. Drag to reorder.</small>
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" multiple hidden>
+    </label>
+  </section>
+  <p class="msg" id="msg" role="alert" hidden></p>
+  <section class="fl-panel" id="listPanel" hidden>
+    <h3 class="fl-title">Files to merge (in this order)</h3>
+    <ul class="fl-list" id="fileList"></ul>
+  </section>
+  <p class="fl-empty" id="emptyMsg">No PDFs selected yet</p>
+  <div class="fl-bar" id="actionBar" hidden>
+    <span class="fl-summary" id="summary"></span>
+    <div class="fl-bar-btns">
+      <button class="fl-ghost-btn" id="clearBtn" type="button">Clear all</button>
+      <button class="fl-primary-btn" id="mergeBtn" type="button" disabled><i class="fa-solid fa-object-group"></i> Merge PDFs</button>
+    </div>
+  </div>
+</main>
+<section class="seo-content" aria-labelledby="seoHow">
+  <h2 id="seoHow">Merge PDF files in three steps</h2>
+  <p>Merge PDF combines several PDF files into one document. Everything runs in your browser, so your files are never uploaded to a server, which keeps private documents private.</p>
+  <ol>
+    <li>Choose two or more PDF files, or drag and drop them into the box.</li>
+    <li>Drag the files into the order you want them to appear.</li>
+    <li>Click merge and download the combined PDF.</li>
+  </ol>
+  <h2>Frequently asked questions</h2>
+  <h3>Are my PDF files uploaded anywhere?</h3>
+  <p>No. Merging happens on your device in the browser.</p>
+  <h3>Can I change the order of the files?</h3>
+  <p>Yes. Drag files to reorder them, or use the up and down arrows.</p>
+  <h3>Is there a limit on the number of files?</h3>
+  <p>There is no fixed limit in the tool; very large files depend on your device's memory.</p>
+</section>
+
+  </div>
+</div>
+<footer class="site-footer">
+  <p>&copy; 2026 PDF Create &middot; Free tools for creating and editing PDFs</p>
+  <a href="../../features.html">All Features</a>
+</footer>
+<script src="../../vendor/pdfjs/pdf.min.js"></script>
+<script src="../../vendor/pdf-lib/pdf-lib.min.js"></script>
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/pdf-tools.js"></script>
+<script src="../../js/file-list.js"></script>
+<script src="js/merge.js"></script>
+</body>
+</html>

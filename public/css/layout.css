@@ -1,0 +1,162 @@
+/* Shared layout: header actions (Edit API + hamburger) and the Tools Menu sidebar.
+   Same look as the home page. Loaded AFTER each sub-page's own CSS. */
+header.main-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+header.main-header .menu-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 8px 14px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+header.main-header .menu-toggle:hover { background: rgba(255, 255, 255, 0.3); }
+
+.app-layout { display: flex; position: relative; flex: 1 0 auto; min-height: 0; }
+.app-layout > .page-content { flex: 1; min-width: 0; }
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 20px clamp(18px, 5vw, 56px);
+  margin-top: auto;
+  border-top: 1px solid var(--line, var(--border-color, #f1e2b8));
+  background: transparent;
+  color: var(--muted, var(--text-muted, #64748b));
+  font: 0.9rem/1.5 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.site-footer p { margin: 0; }
+.site-footer a {
+  color: var(--primary, var(--blue, #e8431c));
+  font-weight: 700;
+  text-decoration: none;
+}
+.site-footer a:hover, .site-footer a:focus-visible { text-decoration: underline; }
+body:has(#editor.app:not([hidden])) .site-footer { display: none; }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-layout > aside.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #f1e2b8;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.app-layout > aside.sidebar .sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  padding: 0 12px 8px 12px;
+}
+.app-layout > aside.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  color: #334155;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.app-layout > aside.sidebar .nav-link i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  color: #64748b;
+  transition: color 0.2s;
+}
+.app-layout > aside.sidebar .nav-link:hover { background-color: #f1f5f9; color: #e8431c; }
+.app-layout > aside.sidebar .nav-link:hover i { color: #e8431c; }
+.app-layout > aside.sidebar .nav-link.active { background: #fff1d0; color: #e8431c; }
+.app-layout > aside.sidebar .nav-link.active i { color: #e8431c; }
+
+@media (prefers-color-scheme: dark) {
+  .app-layout > aside.sidebar { background-color: #2a1f17; border-color: #4a3626; }
+  .app-layout > aside.sidebar .sidebar-title { color: #d9c3a5; }
+  .app-layout > aside.sidebar .nav-link { color: #fff3dc; }
+  .app-layout > aside.sidebar .nav-link i { color: #d9c3a5; }
+  .app-layout > aside.sidebar .nav-link:hover { background-color: #3a2b1f; color: #ffb347; }
+  .app-layout > aside.sidebar .nav-link:hover i { color: #ffb347; }
+  .app-layout > aside.sidebar .nav-link.active { background: #3a2b1f; color: #ffb347; }
+  .app-layout > aside.sidebar .nav-link.active i { color: #ffb347; }
+}
+
+@media (max-width: 768px) {
+  header.main-header .menu-toggle { display: block; }
+  .app-layout { flex-direction: column; min-height: 0; }
+  .app-layout > aside.sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #f1e2b8;
+    padding: 12px 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease;
+  }
+  /* fixed under the sticky header so it is visible even after scrolling down */
+  .app-layout > aside.sidebar {
+    position: fixed; left: 0; right: 0; top: var(--header-h, 70px); z-index: 99;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+    pointer-events: none;
+  }
+  .app-layout > aside.sidebar.open { max-height: 320px; opacity: 1; padding-bottom: 16px; pointer-events: auto; overflow-y: auto; }
+  .app-layout > aside.sidebar .sidebar-title { display: none; }
+}
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  .app-layout > aside.sidebar { border-bottom-color: #4a3626; }
+}
+
+/* Back button: sits under the header, above the page title (first thing inside <main>) */
+.page-back { margin: 0 0 16px; }
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px 9px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #f1e2b8;
+  color: #e8431c;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+}
+.back-btn:hover, .back-btn:focus-visible { border-color: #e8431c; box-shadow: 0 4px 12px rgba(232, 67, 28, 0.18); outline: none; }
+.back-btn:active { transform: scale(0.97); }
+.back-btn i { font-size: 0.9rem; }
+@media (prefers-color-scheme: dark) {
+  .back-btn { background: #2a1f17; border-color: #4a3626; color: #ffb347; }
+}
+/* full-screen editor of "Edit Other Things": no back bar */
+body:has(div#editor.app:not([hidden])) .page-back { display: none; }

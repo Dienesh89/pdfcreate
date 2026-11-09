@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam Paper Maker – Handwritten Question Paper to PDF</title>
+<meta name="description" content="Turn photos of a handwritten question paper into a consistent, formatted, print-ready exam paper PDF. Free online exam paper maker.">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/pages/exam-paper-maker/index.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#e8431c">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://YOUR-DOMAIN.com/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDF Create">
+<meta property="og:title" content="Exam Paper Maker – Handwritten Question Paper to PDF">
+<meta property="og:description" content="Turn photos of a handwritten question paper into a consistent, formatted, print-ready exam paper PDF. Free online exam paper maker.">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/pages/exam-paper-maker/index.html">
+<meta property="og:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Exam Paper Maker – Handwritten Question Paper to PDF">
+<meta name="twitter:description" content="Turn photos of a handwritten question paper into a consistent, formatted, print-ready exam paper PDF. Free online exam paper maker.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PDF Create",
+          "item": "https://YOUR-DOMAIN.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "All Features",
+          "item": "https://YOUR-DOMAIN.com/features.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Exam Paper Maker",
+          "item": "https://YOUR-DOMAIN.com/pages/exam-paper-maker/index.html"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Exam Paper Maker – PDF Create",
+      "url": "https://YOUR-DOMAIN.com/pages/exam-paper-maker/index.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any (web browser)",
+      "description": "Turn photos of a handwritten question paper into a consistent, formatted, print-ready exam paper PDF. Free online exam paper maker.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="../../css/file-list.css">
+<link rel="stylesheet" href="css/image-preview.css">
+<link rel="stylesheet" href="../../css/puter-auth.css">
+<link rel="stylesheet" href="css/modal.css">
+<link rel="stylesheet" href="../../vendor/sweetalert2/sweetalert2.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+<header class="main-header">
+  <a class="logo-group" href="../../features.html" aria-label="PDF Create - All Features">
+    <i class="fa-solid fa-file-pdf"></i>
+    <span class="site-name">PDF Create</span>
+  </a>
+  <div class="header-actions">
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Sign out" hidden>
+      <span>Sign out</span>
+    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link active">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+    <a href="../merge-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-object-group"></i>
+      <span>Merge PDF</span>
+    </a>
+    <a href="../split-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-scissors"></i>
+      <span>Split PDF</span>
+    </a>
+  </aside>
+  <div class="page-content">
+
+<main>
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../../features.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+
+  <!-- ========== Puter sign-in card (hidden once signed in) ========== -->
+  <section class="auth-card" id="authCard">
+    <div class="auth-text">
+      <h2 class="auth-title">Sign in to start &mdash; it's free</h2>
+      <p class="auth-sub">The AI conversion runs on <b>Puter</b>. No API key needed: sign in with a free Puter account and its monthly free allowance covers your pages.</p>
+    </div>
+
+    <button class="auth-btn" id="puterSignInBtn" type="button">
+      <span class="auth-btn-label">Sign in with Puter</span>
+      <span class="spinner" aria-hidden="true"></span>
+    </button>
+
+    <!-- Opens Puter where a free account can be created -->
+    <a class="link-btn" href="https://puter.com" target="_blank" rel="noopener noreferrer">
+      <span>Create a free Puter account</span>
+      <svg class="ext-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+    </a>
+  </section>
+<h1 class="page-h1">Create Exam Paper</h1>
+  <section class="fl-panel">
+    <label class="fl-drop" id="dropzone" for="fileInput">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p><span class="fl-link">Choose images</span> or drag and drop here</p>
+      <small>Photos of the handwritten question paper &middot; Max 3 images &middot; first image = page 1 (with header) &middot; drag to reorder</small>
+      <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    </label>
+  </section>
+
+  <p class="fl-empty" id="emptyMsg">No images selected yet</p>
+  <section class="fl-panel" id="listPanel" hidden>
+    <h3 class="fl-title">Question paper images (in page order)</h3>
+    <ul class="fl-list" id="fileList"></ul>
+  </section>
+  <div class="fl-bar" id="actionBar" hidden>
+    <span class="fl-summary" id="summary"></span>
+    <div class="fl-bar-btns">
+      <button class="fl-ghost-btn" id="clearBtn" type="button">Clear all</button>
+      <button class="fl-primary-btn" id="convertBtn" type="button" disabled>Create Exam Paper PDF</button>
+    </div>
+  </div>
+  <!-- Modal (initally bhidden)-->
+<div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pm-modal">
+    <div class="pm-head">
+      <h2 class="pm-title" id="pmTitle">Processing images</h2>
+      <p class="pm-sub" id="pmSub"></p>
+    </div>
+    <div class="pm-body" id="pmBody"></div>
+  </div>
+</div>
+
+</main>
+<section class="seo-content" aria-labelledby="seoHow">
+  <h2 id="seoHow">Make an exam paper PDF from a photo</h2>
+  <p>Exam Paper Maker turns photos of a handwritten question paper into a consistent, professionally formatted exam paper PDF. Teachers can keep one clean layout across every paper without retyping each question.</p>
+  <ol>
+    <li>Open the tool and sign in with a free Puter account.</li>
+    <li>Upload photos of your handwritten question paper.</li>
+    <li>Start the conversion; the questions are read and formatted into a standard exam layout.</li>
+    <li>Review the paper and download the print-ready PDF.</li>
+  </ol>
+  <h2>Frequently asked questions</h2>
+  <h3>Who is the exam paper maker for?</h3>
+  <p>Teachers and tutors who write question papers by hand and want a clean printed version.</p>
+  <h3>Is it free?</h3>
+  <p>Yes. You sign in with a free Puter account, which covers the AI usage.</p>
+  <h3>Can I change the paper after it is created?</h3>
+  <p>Yes. Use the Edit PDF Text tool on this site to adjust questions or marks.</p>
+</section>
+
+
+<!-- Load order matters: every file can use the ones above it -->
+  </div><!-- /page-content -->
+</div><!-- /app-layout -->
+
+<footer class="site-footer">
+  <p>&copy; 2026 PDF Create &middot; Free tools for creating and editing PDFs</p>
+  <a href="../../features.html">All Features</a>
+</footer>
+
+<script src="../../vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<!-- Puter.js: free AI, no API key. Loaded after the page is painted so it does not block first render -->
+<script src="../../vendor/puter/puter.js"></script>
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script src="js/config.js"></script>
+<script src="js/dom.js"></script>
+<script src="js/utils.js"></script>
+<script src="../../js/file-list.js"></script>
+<script src="js/image-list.js"></script>
+<script src="js/image-preview.js"></script>
+<script src="../../js/puter-ai.js"></script>
+<script src="../../js/pdf-download.js"></script>
+<script src="js/exam-template.js"></script>
+<script src="js/pdf-export.js"></script>
+<script src="js/convert-flow.js"></script>
+<script src="js/main.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

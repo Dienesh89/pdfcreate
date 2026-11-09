@@ -1,0 +1,52 @@
+  .pm-overlay{
+    --pm-bg:#f4f5fb; --pm-card:#ffffff; --pm-text:#1c1b2e; --pm-muted:#8b8aa3; --pm-line:#ececf6;
+    --pm-p:#f59e0b; --pm-b:#f97316; --pm-ok:#10b981; --pm-err:#ef4444; --pm-warn:#f59e0b;
+    --pm-overlay:rgba(20,16,40,.72);
+  }
+  @media (prefers-color-scheme:dark){
+    .pm-overlay{--pm-bg:#0e0d18;--pm-card:#18172a;--pm-text:#f1f0ff;--pm-muted:#8f8eb0;--pm-line:#2a2942;--pm-overlay:rgba(0,0,0,.78)}
+  }
+
+  /* ===== MODAL (all rules scoped to .pm-overlay) ===== */
+  .pm-overlay,.pm-overlay *{box-sizing:border-box}
+  .pm-overlay{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--pm-text)}
+  .pm-overlay{position:fixed;inset:0;background:var(--pm-overlay);
+    display:none;align-items:center;justify-content:center;padding:16px;z-index:9999;opacity:0;transition:opacity .25s}
+  .pm-overlay.show{display:flex}
+  .pm-overlay.visible{opacity:1}
+  .pm-modal{width:100%;max-width:440px;max-height:85vh;display:flex;flex-direction:column;background:var(--pm-card);
+    border-radius:22px;box-shadow:0 25px 60px rgba(60,30,140,.35);overflow:hidden;
+    transform:translateY(16px) scale(.97);transition:transform .25s}
+  .pm-overlay.visible .pm-modal{transform:none}
+  .pm-head{padding:22px 24px 14px;border-bottom:1px solid var(--pm-line)}
+  .pm-title{margin:0;font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--pm-p),var(--pm-b));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .pm-sub{margin:4px 0 0;font-size:13px;color:var(--pm-muted)}
+  .pm-body{padding:14px 18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+  .pm-card{border:1px solid var(--pm-line);border-radius:16px;padding:14px 16px}
+  .pm-card h3{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--pm-text)}
+  .pm-step{display:flex;gap:12px;align-items:flex-start;padding:6px 0}
+  .pm-icon{width:22px;height:22px;flex:none;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .pm-label{font-size:14px;color:var(--pm-muted);transition:color .2s}
+  .pm-step.active .pm-label,.pm-step.done .pm-label{color:var(--pm-text)}
+  .pm-step.error .pm-label{color:var(--pm-err)}
+  .pm-note{display:block;font-size:12px;margin-top:3px;line-height:1.4}
+  .pm-note.warn{color:var(--pm-warn)} .pm-note.err{color:var(--pm-err)}
+  .pm-note b{font-variant-numeric:tabular-nums}
+
+  .pm-overlay .pm-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--pm-line)}
+  .pm-overlay .pm-spinner{width:20px;height:20px;border-radius:50%;border:3px solid var(--pm-line);border-top-color:var(--pm-b);
+    animation:pm-spin .8s linear infinite}
+  @keyframes pm-spin{to{transform:rotate(360deg)}}
+  .pm-overlay .pm-chk,.pm-overlay .pm-x{width:20px;height:20px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .pm-overlay .pm-chk{background:var(--pm-ok)} .pm-overlay .pm-x{background:var(--pm-err)}
+
+  /* ===== "PDF ready" state ===== */
+  .pm-hint{margin:0;font-size:14px;line-height:1.5;color:var(--pm-muted)}
+  .pm-actions{display:flex;flex-direction:column;gap:10px}
+  .pm-btn{font:600 16px system-ui,sans-serif;padding:14px 16px;border-radius:14px;border:1px solid var(--pm-line);
+    background:var(--pm-card);color:var(--pm-text);cursor:pointer}
+  .pm-btn.primary{border:0;color:#fff;background:linear-gradient(135deg,var(--pm-p),var(--pm-b))}
+  .pm-btn i{margin-right:6px}
+  .pm-btn:disabled{opacity:.75;cursor:wait}

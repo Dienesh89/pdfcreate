@@ -1,0 +1,24 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+  --head-grad: linear-gradient(90deg, #e8431c, #f59e0b);
+}
+
+header {
+  padding: 22px clamp(18px, 5vw, 56px);
+  background: var(--head-grad);
+}
+
+header h1, header .site-name {
+  display: block;
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}

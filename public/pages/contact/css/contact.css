@@ -1,0 +1,30 @@
+/* Contact Us form (uses the shared .panel / .field / .msg styles from pdf-tools.css) */
+#contactForm .field input[type=email],
+#contactForm .field textarea {
+  width: 100%;
+  max-width: none;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  font-size: 1rem;
+  line-height: 1.5;
+  background: #fff;
+  color: var(--ink);
+}
+#contactForm .field textarea { resize: vertical; min-height: 140px; }
+#contactForm .field input:focus,
+#contactForm .field textarea:focus { outline: none; border-color: var(--primary); }
+#contactForm .field.invalid input,
+#contactForm .field.invalid textarea { border-color: #dc2626; }
+#contactForm .hint { text-align: right; }
+#contactForm .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+#contactForm .actions { margin-top: 4px; }
+@media (max-width: 520px) {
+  #contactForm .actions { flex-direction: column-reverse; align-items: stretch; }
+  #contactForm .primary-btn { justify-content: center; }
+  #contactForm .summary { text-align: center; }
+}
+@media (prefers-color-scheme: dark) {
+  #contactForm .field input[type=email],
+  #contactForm .field textarea { background: #1d1510; }
+}

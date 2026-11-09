@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Online PDF Editor – Edit Text, Rotate & Resize</title>
+<meta name="description" content="Edit PDF text, rotate pages, zoom and resize right in your browser. Pick the PDF editing tool you need and download the result.">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/pages/pdf-editor/index.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#e8431c">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://YOUR-DOMAIN.com/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDF Create">
+<meta property="og:title" content="Free Online PDF Editor – Edit Text, Rotate & Resize">
+<meta property="og:description" content="Edit PDF text, rotate pages, zoom and resize right in your browser. Pick the PDF editing tool you need and download the result.">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/pages/pdf-editor/index.html">
+<meta property="og:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Online PDF Editor – Edit Text, Rotate & Resize">
+<meta name="twitter:description" content="Edit PDF text, rotate pages, zoom and resize right in your browser. Pick the PDF editing tool you need and download the result.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PDF Create",
+          "item": "https://YOUR-DOMAIN.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "All Features",
+          "item": "https://YOUR-DOMAIN.com/features.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF Editor",
+          "item": "https://YOUR-DOMAIN.com/pages/pdf-editor/index.html"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "PDF Editor – PDF Create",
+      "url": "https://YOUR-DOMAIN.com/pages/pdf-editor/index.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any (web browser)",
+      "description": "Edit PDF text, rotate pages, zoom and resize right in your browser. Pick the PDF editing tool you need and download the result.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="css/chooser.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+<header class="main-header">
+  <a class="logo-group" href="../../features.html" aria-label="PDF Create - All Features">
+    <i class="fa-solid fa-file-pdf"></i>
+    <span class="site-name">PDF Create</span>
+  </a>
+  <div class="header-actions">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link active">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+    <a href="../merge-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-object-group"></i>
+      <span>Merge PDF</span>
+    </a>
+    <a href="../split-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-scissors"></i>
+      <span>Split PDF</span>
+    </a>
+  </aside>
+  <div class="page-content">
+
+<main>
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../../features.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+
+  <div class="section-header">
+    <h1>PDF Editor: what do you want to edit?</h1>
+    <p>Choose the kind of editing you need.</p>
+  </div>
+
+  <p class="gen-banner" id="genBanner" hidden><i class="fa-solid fa-circle-check"></i> Your generated PDF is ready. Choose an editing option to open it directly.</p>
+
+  <div class="choice-grid">
+    <!-- Text editing -> edit-pdf -->
+    <a href="../edit-pdf/index.html" class="choice-card c-text" id="textCard">
+      <div>
+        <div class="choice-icon"><i class="fa-solid fa-font"></i></div>
+        <h3 class="choice-title">Edit Text</h3>
+        <p class="choice-desc">Change the text written inside your PDF.</p>
+        <span class="choice-note"><i class="fa-solid fa-circle-info"></i> Works only for PDFs generated by PDF Create.</span>
+      </div>
+      <div class="choice-footer"><span>Edit Text</span><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
+    <!-- Other edits -> pdf-editor-full -->
+    <a href="../pdf-editor-full/index.html" class="choice-card c-other" id="otherCard">
+      <div>
+        <div class="choice-icon"><i class="fa-solid fa-sliders"></i></div>
+        <h3 class="choice-title">Edit Other Things</h3>
+        <p class="choice-desc">Rotate, zoom, move page content, change orientation and resize page layouts.</p>
+        <span class="choice-note"><i class="fa-solid fa-circle-info"></i> Text of PDFs generated by PDF Create can't be edited here. Text of other PDFs can.</span>
+      </div>
+      <div class="choice-footer"><span>Open Editor</span><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+  </div>
+</main>
+<section class="seo-content" aria-labelledby="seoHow">
+  <h2 id="seoHow">Choose the right PDF editing tool</h2>
+  <p>The PDF Editor is a set of free online tools for fixing a PDF in your browser: edit text, rotate pages, zoom and resize. Choose the tool you need, upload your PDF and download the updated file.</p>
+  <ol>
+    <li>Pick Edit PDF Text to change words inside a PDF.</li>
+    <li>Pick the page editor to rotate, zoom or resize pages.</li>
+    <li>Open your PDF, make your changes and download the result.</li>
+  </ol>
+  <h2>Frequently asked questions</h2>
+  <h3>Is the PDF editor free?</h3>
+  <p>Yes, it is free to use.</p>
+  <h3>Do I need to install anything?</h3>
+  <p>No. Everything works in your browser.</p>
+  <h3>Can I edit PDFs made by this site's other tools?</h3>
+  <p>Yes. PDFs created by Handwritten to PDF, Syllabus Maker and Exam Paper Maker can be opened for text editing.</p>
+</section>
+
+  </div><!-- /page-content -->
+</div><!-- /app-layout -->
+
+<footer class="site-footer">
+  <p>&copy; 2026 PDF Create &middot; Free tools for creating and editing PDFs</p>
+  <a href="../../features.html">All Features</a>
+</footer>
+
+<script>
+(function () {
+  var KEY = 'pdfcreate.generatedPages';
+  var fromGenerated = new URLSearchParams(location.search).get('from') === 'generated';
+  var has = false;
+  try { has = fromGenerated && !!sessionStorage.getItem(KEY); } catch (e) {}
+  if (!has) return;
+
+  document.getElementById('genBanner').hidden = false;
+  document.getElementById('textCard').href = '../edit-pdf/index.html?generated=1';
+  document.getElementById('otherCard').href = '../pdf-editor-full/index.html?generated=1';
+})();
+</script>
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "pdf-create",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "seo:domain": "node scripts/set-domain.mjs"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "^153.0.0",
+    "next": "^16.4.5",
+    "puppeteer-core": "^25.16.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}

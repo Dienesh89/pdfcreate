@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split PDF Online – Extract Pages & Split by Range | PDF Create</title>
+<meta name="description" content="Split a PDF by page range, every N pages or selected pages. Runs in your browser, so your files are never uploaded. Free.">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/pages/split-pdf/index.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#e8431c">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://YOUR-DOMAIN.com/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://YOUR-DOMAIN.com/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDF Create">
+<meta property="og:title" content="Split PDF Online – Extract Pages & Split by Range | PDF Create">
+<meta property="og:description" content="Split a PDF by page range, every N pages or selected pages. Runs in your browser, so your files are never uploaded. Free.">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/pages/split-pdf/index.html">
+<meta property="og:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Split PDF Online – Extract Pages & Split by Range | PDF Create">
+<meta name="twitter:description" content="Split a PDF by page range, every N pages or selected pages. Runs in your browser, so your files are never uploaded. Free.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PDF Create",
+          "item": "https://YOUR-DOMAIN.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "All Features",
+          "item": "https://YOUR-DOMAIN.com/features.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Split PDF",
+          "item": "https://YOUR-DOMAIN.com/pages/split-pdf/index.html"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Split PDF – PDF Create",
+      "url": "https://YOUR-DOMAIN.com/pages/split-pdf/index.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any (web browser)",
+      "description": "Split a PDF by page range, every N pages or selected pages. Runs in your browser, so your files are never uploaded. Free.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="../../css/pdf-tools.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/header.css">
+<link rel="stylesheet" href="../../css/layout.css">
+</head>
+<body>
+<header class="main-header">
+  <a class="logo-group" href="../../features.html" aria-label="PDF Create - All Features">
+    <i class="fa-solid fa-file-pdf"></i>
+    <span class="site-name">PDF Create</span>
+  </a>
+  <div class="header-actions">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-title">Tools Menu</span>
+    <a href="../exam-paper-maker/index.html" class="nav-link">
+      <i class="fa-solid fa-file-signature"></i>
+      <span>Exam Paper Maker</span>
+    </a>
+    <a href="../syllabus/index.html" class="nav-link">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Syllabus Maker</span>
+    </a>
+    <a href="../hw-to-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>Handwritten to PDF</span>
+    </a>
+    <a href="../pdf-editor/index.html" class="nav-link">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PDF Editor</span>
+    </a>
+    <a href="../merge-pdf/index.html" class="nav-link">
+      <i class="fa-solid fa-object-group"></i>
+      <span>Merge PDF</span>
+    </a>
+    <a href="../split-pdf/index.html" class="nav-link active">
+      <i class="fa-solid fa-scissors"></i>
+      <span>Split PDF</span>
+    </a>
+  </aside>
+  <div class="page-content">
+<main class="tool">
+  <div class="page-back">
+    <a class="back-btn" id="backNavBtn" href="../../features.html" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+    </a>
+  </div>
+  <h1>Split PDF</h1>
+  <p class="sub">Split a PDF by page ranges, every N pages, or pick the pages you want. Files stay on your device.</p>
+  <section class="panel" id="uploadPanel">
+    <label class="dropzone" id="dropzone" for="fileInput">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p><span class="link">Choose a PDF</span> or drag and drop here</p>
+      <small>Max 1 PDF</small>
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+    </label>
+  </section>
+  <p class="msg" id="msg" role="alert" hidden></p>
+  <section id="splitUi" hidden>
+    <div class="panel file-head">
+      <button class="icon-btn" id="removeBtn" type="button" aria-label="Remove PDF">✕</button>
+      <div class="thumb" id="fileThumb">PDF</div>
+      <div class="f-meta"><div class="f-name" id="fileName"></div><div class="f-info" id="fileInfo"></div></div>
+    </div>
+    <div class="panel">
+      <h3 class="section-title">How do you want to split it?</h3>
+      <div class="modes" id="modes">
+        <button class="mode active" type="button" data-mode="ranges">Page ranges</button>
+        <button class="mode" type="button" data-mode="every">Every N pages</button>
+        <button class="mode" type="button" data-mode="select">Select pages</button>
+      </div>
+
+      <div id="paneRanges">
+        <div class="field">
+          <label for="rangeInput">Page ranges</label>
+          <input id="rangeInput" type="text" placeholder="e.g. 1-3, 5, 7-9" autocomplete="off">
+          <p class="hint">Each comma-separated range becomes its own PDF. Example: <b>1-3, 5, 7-9</b> creates 3 files.</p>
+        </div>
+        <label class="check"><input type="checkbox" id="mergeRanges"> Put all these pages together in one PDF</label>
+      </div>
+
+      <div id="paneEvery" hidden>
+        <div class="field">
+          <label for="everyInput">Pages per file</label>
+          <input id="everyInput" type="number" min="1" value="1" inputmode="numeric">
+          <p class="hint">Use 1 to save every page as a separate PDF.</p>
+        </div>
+      </div>
+
+      <div id="paneSelect" hidden>
+        <div class="sel-tools">
+          <button type="button" id="selAll">Select all</button>
+          <button type="button" id="selNone">Clear</button>
+          <button type="button" id="selOdd">Odd</button>
+          <button type="button" id="selEven">Even</button>
+        </div>
+        <div class="page-grid" id="pageGrid"></div>
+        <p class="hint">Tap pages to choose them. The chosen pages are saved together as one PDF.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <span class="summary" id="summary"></span>
+      <button class="primary-btn" id="splitBtn" type="button" disabled><i class="fa-solid fa-scissors"></i> Split PDF</button>
+    </div>
+  </section>
+</main>
+<section class="seo-content" aria-labelledby="seoHow">
+  <h2 id="seoHow">Split a PDF in three steps</h2>
+  <p>Split PDF breaks one PDF into smaller files by page range, every N pages, or the specific pages you select. It runs in your browser, so your file is never uploaded.</p>
+  <ol>
+    <li>Choose a PDF file, or drag and drop it into the box.</li>
+    <li>Pick a mode: page ranges, every N pages, or selected pages.</li>
+    <li>Click split and download the result. Several output files come as a ZIP.</li>
+  </ol>
+  <h2>Frequently asked questions</h2>
+  <h3>Is my PDF uploaded to a server?</h3>
+  <p>No. Splitting happens on your device in the browser.</p>
+  <h3>Can I extract just a few pages?</h3>
+  <p>Yes. Use the selected pages or page range option.</p>
+  <h3>What happens if I create several files?</h3>
+  <p>They are bundled into a single ZIP file for download.</p>
+</section>
+
+  </div>
+</div>
+<footer class="site-footer">
+  <p>&copy; 2026 PDF Create &middot; Free tools for creating and editing PDFs</p>
+  <a href="../../features.html">All Features</a>
+</footer>
+<script src="../../vendor/pdfjs/pdf.min.js"></script>
+<script src="../../vendor/pdf-lib/pdf-lib.min.js"></script>
+<script src="../../js/sidebar.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/pdf-tools.js"></script>
+<script src="js/split.js"></script>
+</body>
+</html>
