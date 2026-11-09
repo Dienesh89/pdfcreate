@@ -123,6 +123,8 @@ body > main { flex: 1; }
 @media (max-width: 700px) {
   .floaters i { font-size: 1.5rem; } .f1, .f4 { font-size: 2rem !important; }
   .f5, .f6 { display: none; }
+  /* PDF icon was overlapping the "C" of the headline on phones: park it in the top-left corner, above the pill row */
+  .f1 { top: 4%; left: 5%; }
   .get-started, .ghost-btn { width: 100%; justify-content: center; max-width: 340px; }
 }
 /* Hero is off-screen (set by home.js): stop all its animations */
@@ -130,7 +132,12 @@ body > main { flex: 1; }
 
 /* Phones / touch screens: keep the look, drop the continuous decorative animation (saves battery, RAM and GPU) */
 @media (max-width: 900px), (pointer: coarse) {
-  .blob, .floaters i, .logo-group i, .p-front, .scroll-hint, .caret { animation: none; }
+  .blob, .logo-group i, .scroll-hint, .caret { animation: none; }
+  /* Levitate: floating icons + paper stack keep a gentle bob on phones (uses the cheap `translate` property, no repaint) */
+  .floaters i { animation: bob 6s ease-in-out infinite; }
+  .p-front { animation: bob 5s ease-in-out infinite; }
+  .p-back { animation: bob 6.5s ease-in-out -1.5s infinite; }
+  .p-mid { animation: bob 5.5s ease-in-out -3s infinite; }
   .line::after { display: none; }
   .stamp { animation: none; opacity: 1; }
   .glow { display: none; }
