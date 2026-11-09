@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
+Sitemap: https://pdfcreate.vercel.app/sitemap.xml
