@@ -2,8 +2,13 @@
 const nextConfig = {
   poweredByHeader: false,
   compress: true,
+  // Don't bundle these: @sparticuz/chromium needs its bin/ folder at runtime
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   outputFileTracingIncludes: {
-    "/api/pdf": ["./app/api/pdf/fonts/NotoSansDevanagari.ttf"]
+    "/api/pdf": [
+      "./app/api/pdf/fonts/NotoSansDevanagari.ttf",
+      "./node_modules/@sparticuz/chromium/bin/**"
+    ]
   },
   async redirects() {
     return [
@@ -32,3 +37,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
