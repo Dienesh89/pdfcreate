@@ -15,17 +15,17 @@ const EXAM_CSS = `
 
 body {
   font-family: 'Verdana', 'DejaVu Sans', 'Segoe UI', Arial, sans-serif;
-  color: #111;
-  font-size: 12.5px;
-  line-height: 1.45;
+  color: #000;
+  font-size: 14.5px;
+  line-height: 1.28;
   margin: 0;
   padding: 0;
 }
 :root {
   --mono: 'DejaVu Sans Mono', 'Courier New', Consolas, monospace;
-  --ink: #111;
-  --soft: #5a6a85;
-  --line: #9aa4b5;
+  --ink: #000;
+  --soft: #000;
+  --line: #000;
 }
 
 /* ---------- HEADER ---------- */
@@ -35,42 +35,42 @@ body {
   align-items: end;
   column-gap: 10px;
 }
-.header-grid .time, .header-grid .mm { font-weight: 700; font-size: 13px; white-space: nowrap; }
+.header-grid .time, .header-grid .mm { font-weight: 700; font-size: 14.5px; white-space: nowrap; }
 .header-grid .time { text-align: left; }
 .header-grid .mm   { text-align: right; }
 .header-grid .titles { text-align: center; }
 
 .school-name {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin: 0 0 3px 0;
+  margin: 0 0 2px 0;
 }
 .exam-title, .exam-class, .exam-subject, .exam-line {
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 700;
-  margin: 2px 0;
+  margin: 1px 0;
 }
-.exam-line { font-size: 13px; color: #1d3557; }
+.exam-line { font-size: 15px; color: #000; }
 
-.header-rule { border: 0; border-top: 1.5px solid #000; margin: 9px 0 10px 0; }
+.header-rule { border: 0; border-top: 1.5px solid #000; margin: 6px 0 6px 0; }
 
 /* Name / Roll No / Date box (added by the template, not by the AI) */
 .student-box {
   display: flex;
   align-items: flex-end;
   gap: 18px;
-  border: 1px solid #b6bfcd;
-  background: #f5f7fb;
+  border: 1px solid #555;
+  background: #fff;
   border-radius: 6px;
-  padding: 7px 12px;
+  padding: 5px 12px;
   font-family: var(--mono);
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
 }
 .student-box .f { display: flex; align-items: flex-end; gap: 6px; white-space: nowrap; }
-.student-box .f i { display: inline-block; border-bottom: 1px solid #333; height: 12px; }
+.student-box .f i { display: inline-block; border-bottom: 1px solid #000; height: 12px; }
 .student-box .name { flex: 1.9; }  .student-box .name i { flex: 1; }
 .student-box .roll { flex: 1; }    .student-box .roll i { flex: 1; }
 .student-box .date { flex: 1.2; }  .student-box .date i { flex: 1; }
@@ -79,23 +79,23 @@ body {
   text-align: center;
   font-weight: 700;
   text-decoration: underline;
-  margin: 12px 0 12px 0;
-  font-size: 13px;
+  margin: 7px 0 7px 0;
+  font-size: 14.5px;
 }
 
 /* ---------- QUESTION BLOCK ---------- */
-.q-block { margin-bottom: 11px; }
+.q-block { margin-bottom: 7px; }
 
 .q-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: .01em;
-  padding-bottom: 3px;
-  margin-bottom: 7px;
-  border-bottom: 1px dotted var(--line);
+  padding-bottom: 0;
+  margin-bottom: 3px;
+  border-bottom: none;
 }
 .q-title { text-decoration: none; }
 
@@ -108,21 +108,20 @@ body {
   height: 21px;
   padding: 0 5px;
   margin-left: 10px;
-  border: 1.5px solid #333;
+  border: 1.5px solid #000;
   border-radius: 11px;
-  background: #f3f5f9;
+  background: #fff;
   font-size: 11px;
   line-height: 1;
   white-space: nowrap;
   text-decoration: none;
 }
-.q-marks:empty { display: none; }
 
 .q-body { margin-left: 0; }
-.q-item { margin: 4px 0; }
+.q-item { margin: 2px 0; }
 
 /* ---------- ITEMS IN COLUMNS ---------- */
-.items-2, .items-4 { display: grid; column-gap: 28px; row-gap: 8px; margin: 2px 0; }
+.items-2, .items-4 { display: grid; column-gap: 28px; row-gap: 3px; margin: 1px 0; }
 .items-2 { grid-template-columns: 1fr 1fr; }
 .items-4 { grid-template-columns: repeat(4, 1fr); column-gap: 14px; }
 .items-2 .q-item, .items-4 .q-item { margin: 0; white-space: nowrap; display: flex; align-items: flex-end; gap: 6px; }
@@ -136,23 +135,23 @@ body {
   display: inline-block;
   min-width: 80px;
   height: 1.05em;
-  border-bottom: 1.2px solid #222;
+  border-bottom: 1.2px solid #000;
   vertical-align: bottom;
 }
 .blank.short { min-width: 50px; }
 
 /* ---------- FILL IN THE BLANKS WITH CHOICES ---------- */
-.fill .q-item { margin: 3px 0; }
+.fill .q-item { margin: 2px 0; }
 .fill .blank { min-width: 62px; margin: 0 2px; }
-.opts { font-style: italic; margin-left: 8px; color: #222; }
+.opts { font-style: italic; margin-left: 8px; color: #000; }
 
 /* ---------- VERTICAL SUMS ---------- */
 .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 2px; }
 .calc {
   position: relative;
-  border: 1px solid #b6bfcd;
+  border: 1px solid #555;
   border-radius: 7px;
-  background: #f7f9fc;
+  background: #fff;
   padding: 9px 12px 8px 12px;
   font-family: var(--mono);
   font-size: 13px;
@@ -161,22 +160,22 @@ body {
   min-height: 60px;
 }
 .calc-top, .calc-op { padding: 0 3px; line-height: 1.5; }
-.calc-op { border-bottom: 1.5px solid #222; padding-bottom: 3px; margin-bottom: 11px; }
+.calc-op { border-bottom: 1.5px solid #000; padding-bottom: 3px; margin-bottom: 11px; }
 .calc.has-carry { padding-top: 22px; }
 .calc.has-carry::before {
   content: "";
   position: absolute;
   top: 6px; left: 12px;
   width: 14px; height: 14px;
-  border: 1.2px dotted #666;
+  border: 1.2px dotted #000;
   border-radius: 50%;
 }
 
 /* ---------- DIVISION ---------- */
 .div-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .div-item {
-  border: 1px solid #c8d0dc;
-  background: #f1f4f9;
+  border: 1px solid #555;
+  background: #fff;
   border-radius: 6px;
   padding: 3px 4px;
   font-family: var(--mono);
@@ -187,29 +186,29 @@ body {
 }
 
 /* ---------- SHAPES (halves / quarters) ---------- */
-.shape-rows { margin-top: 4px; }
-.shape-row { display: flex; align-items: center; justify-content: space-between; margin: 7px 0; min-height: 42px; }
-.shape-row .lbl { width: 78px; font-size: 15px; font-weight: 700; }
-.shape-row .arrow { font-size: 18px; color: #333; }
-.shape { display: inline-block; width: 38px; height: 38px; border: 1.2px solid #111; background: #fff; }
+.shape-rows { margin-top: 2px; }
+.shape-row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; min-height: 42px; }
+.shape-row .lbl { width: 78px; font-size: 16px; font-weight: 700; }
+.shape-row .arrow { font-size: 18px; color: #000; }
+.shape { display: inline-block; width: 38px; height: 38px; border: 1.2px solid #000; background: #fff; }
 .shape.square { }
 .shape.rect { width: 50px; height: 34px; }
 .shape.circle { border-radius: 50%; }
 .shape.diamond { width: 30px; height: 30px; transform: rotate(45deg); margin: 4px; }
-.shape.triangle { position: relative; width: 46px; height: 40px; border: 0; background: #111; clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+.shape.triangle { position: relative; width: 46px; height: 40px; border: 0; background: #000; clip-path: polygon(50% 0, 0 100%, 100% 100%); }
 .shape.triangle::after { content: ""; position: absolute; inset: 0; background: #fff; clip-path: polygon(50% 5%, 6% 95%, 94% 95%); }
 
 /* ---------- DRAW BOXES ---------- */
 .draw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .draw-box {
   min-height: 52px;
-  border: 1px dashed #8b97ad;
+  border: 1px dashed #555;
   border-radius: 6px;
-  background: #fbfcfe;
+  background: #fff;
   padding: 3px 5px;
   font-weight: 700;
   font-size: 11.5px;
-  color: #2d3b55;
+  color: #000;
 }
 .draw-box.tall { min-height: 100px; }
 .draw-box.wide { grid-column: 1 / -1; }
@@ -217,33 +216,35 @@ body {
 /* ---------- WRITE-A-TABLE LINES ---------- */
 .table-lines .tl { display: flex; align-items: flex-end; gap: 10px; margin: 7px 0 3px 0; font-size: 13.5px; }
 .table-lines .tl b { white-space: nowrap; }
-.table-lines .dots { flex: 1; border-bottom: 1.5px dotted #6b7788; height: 14px; }
+.table-lines .dots { flex: 1; border-bottom: 1.5px dotted #000; height: 14px; }
 
 /* ---------- MCQ / OPTIONS (2 per row) ---------- */
-.options-row { display: flex; margin: 3px 0 3px 22px; gap: 40px; }
-.options-row span { white-space: nowrap; }
+.options-row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 30px; margin: 1px 0 1px 22px; }
+.options-row > span { display: flex; justify-content: space-between; gap: 8px; white-space: nowrap; }
+.options-row > span:only-child { grid-column: 1 / -1; }
+.br { white-space: nowrap; }
 
 /* ---------- TRUE / FALSE ---------- */
-.tf-item { margin: 5px 0 5px 22px; }
+.tf-item { display: flex; justify-content: space-between; gap: 10px; margin: 2px 0 2px 22px; }
 
 /* ---------- JUMBLED WORDS (2 columns) ---------- */
-.jumbled-grid { display: grid; grid-template-columns: 1fr 1fr; row-gap: 5px; margin-left: 22px; max-width: 320px; }
+.jumbled-grid { display: grid; grid-template-columns: 1fr 1fr; row-gap: 2px; margin-left: 22px; max-width: 320px; }
 
 /* ---------- MATCH THE FOLLOWING ---------- */
-.match-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-.match-table td { padding: 8px 8px; vertical-align: middle; font-size: 12.5px; }
+.match-table { width: 100%; border-collapse: collapse; margin-top: 3px; }
+.match-table td { padding: 2px 8px; vertical-align: middle; font-size: 14.5px; }
 .match-table td.icon-cell { width: 90px; }
 .icon-box {
   width: 64px; height: 46px;
   border: 1px solid #555;
-  background: #eef0f3;
+  background: #fff;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 16px;
   border-radius: 2px;
 }
 
 /* ---------- DIAGRAM / ANSWER SPACE ---------- */
-.diagram-space { border: 1px dashed #999; height: 140px; margin-top: 8px; border-radius: 4px; }
+.diagram-space { border: 1px dashed #555; height: 140px; margin-top: 8px; border-radius: 4px; }
 .answer-lines { margin-left: 22px; }
 .answer-lines .line { border-bottom: 1px solid #000; height: 20px; margin-bottom: 4px; }
 
@@ -252,7 +253,7 @@ body {
   position: fixed;
   left: 16mm; right: 16mm; bottom: 9mm;
   display: flex; justify-content: space-between;
-  border-top: 1px solid #cfd6e2;
+  border-top: 1px solid #555;
   padding-top: 5px;
   font-family: var(--mono);
   font-size: 10px;
@@ -268,8 +269,8 @@ body { padding: 14mm 16mm; }
 
 // A4 page frame = 296.5mm high (see pdf-export.js); usable height = frame - top/bottom padding (14mm each)
 const MM_TO_PX = 96 / 25.4;
-// footer lives in the bottom 20mm, so content may use: frame - 14mm top - 20mm bottom
-const PAGE_CONTENT_LIMIT_PX = (296.5 - 14 - 20) * MM_TO_PX - 4; // 4px safety margin
+// no footer: content may use frame - 14mm top - 14mm bottom
+const PAGE_CONTENT_LIMIT_PX = (296.5 - 14 - 14) * MM_TO_PX - 4; // 4px safety margin (no footer any more)
 
 // ---------- helpers ----------
 
@@ -379,11 +380,51 @@ function parseExamFragment(html, isFirstImage) {
 
 // Handwritten numbering is messy ("1-", "5.)", "6-A", "B)", "Q-10", "Q-"). Make it uniform: "1.", "6-A.", "10."
 // Sub-questions that only have a letter ("B)") continue the last number ("6-B."); a bare "Q-" gets the next number.
+// Shown in the marks circle when the paper has no marks for a question (the user edits it later)
+const DEFAULT_MARKS = "0";
+
+// "( )", "()" , "(  )" ... -> always "(" + 3 spaces + ")"
+const TICK_BRACKET = "(&nbsp;&nbsp;&nbsp;)";
+const BRACKET_AT_END = /\s*\(\s*(?:&nbsp;|\u00a0|\s)*\)\s*$/;
+
+// no answer space, no dotted lines (students write in a separate copy); brackets in a straight line
+function cleanBlock(block) {
+  block.querySelectorAll(".answer-lines, .diagram-space, .dots").forEach((el) => el.remove());
+  // draw boxes / table lines -> plain text items
+  block.querySelectorAll(".draw-box").forEach((el) => { el.className = "q-item"; });
+  block.querySelectorAll(".draw-grid").forEach((el) => { el.className = "q-body items-2"; });
+  block.querySelectorAll(".table-lines .tl").forEach((el) => { el.className = "q-item"; });
+  block.querySelectorAll(".table-lines").forEach((el) => { el.className = "q-body items-2"; });
+  // matching: an empty picture cell must not take any space
+  block.querySelectorAll(".match-table td.icon-cell").forEach((cell) => {
+    if (!cell.querySelector("svg") && !cell.textContent.trim()) cell.remove();
+  });
+  // tick / true-false brackets: exactly 3 spaces inside, pushed to the right end of the option / statement
+  block.querySelectorAll(".tf-item, .options-row > span").forEach((el) => {
+    if (el.querySelector(".br")) return;
+    const html = el.innerHTML;
+    if (!BRACKET_AT_END.test(html)) return;
+    el.innerHTML = `<span class="ot">${html.replace(BRACKET_AT_END, "")}</span><span class="br">${TICK_BRACKET}</span>`;
+  });
+}
+
 function tidyQuestionBlocks(blocks) {
   let lastNumber = 0;
   blocks.forEach((block) => {
+    cleanBlock(block);
+    // every question heading always has a marks circle, even if the model left it out
+    const headEl = block.querySelector(".q-head");
+    if (headEl && !headEl.querySelector(".q-marks")) {
+      const m = block.ownerDocument.createElement("span");
+      m.className = "q-marks";
+      headEl.appendChild(m);
+    }
+    // the circle is never empty: "(4)" -> "4"; nothing written / no number -> DEFAULT_MARKS (the user edits it later)
     const marks = block.querySelector(".q-marks");
-    if (marks) marks.textContent = marks.textContent.replace(/[()\s]/g, ""); // "(4)" -> "4" (drawn in a circle)
+    if (marks) {
+      const written = marks.textContent.replace(/[()\s]/g, "");
+      marks.textContent = /\d/.test(written) ? written : DEFAULT_MARKS;
+    }
 
     // "a) <u>5</u>63 = ____": keep the text in one piece, the blank stretches to the end of the column
     block.querySelectorAll(".items-2 .q-item, .items-4 .q-item").forEach((item) => {
@@ -494,15 +535,31 @@ async function buildExamPages(rawPages) {
       startShell(true);
       groups.forEach((group) => {
         group.forEach((node) => shellTarget.appendChild(node));
-        if (!fits() && placed > 0) {
-          group.forEach((node) => shellTarget.removeChild(node));
-          flushPage();
-          startShell(false);
-          group.forEach((node) => shellTarget.appendChild(node));
+        if (!fits()) {
+          const otherQuestionsOnPage = page.querySelectorAll(".q-block").length > 1;
+          if (placed > 0) {
+            // continue on the next page (without the heading)
+            group.forEach((node) => shellTarget.removeChild(node));
+            flushPage();
+            startShell(false);
+            group.forEach((node) => shellTarget.appendChild(node));
+          } else if (otherQuestionsOnPage) {
+            // not even the heading + first part fit here: the whole question starts on a fresh page
+            group.forEach((node) => shellTarget.removeChild(node));
+            page.removeChild(shell);
+            flushPage();
+            startShell(true);
+            group.forEach((node) => shellTarget.appendChild(node));
+          }
         }
         placed++;
       });
     };
+
+    // Questions that should stay in one piece when they fit on a page (tables, sums, shapes, short ones)
+    const isSplittable = (block) =>
+      !block.querySelector(".match-table, .calc-grid, .div-grid, .shape-rows, .draw-grid") &&
+      block.querySelectorAll(".q-item, .tf-item, .options-row, .jumbled-grid > *").length > 3;
 
     page.innerHTML = headerHtml; // page 1 starts with the header
 
@@ -514,7 +571,13 @@ async function buildExamPages(rawPages) {
       if (fits()) continue;
       page.removeChild(block);
 
-      // Not enough room: try a fresh page first
+      // Not enough room: a long list-type question (MCQ, true/false, fill-in ...) fills the rest of this page
+      // first and continues on the next one, so no big empty gap is left
+      if (hasQuestions() && isSplittable(block)) {
+        splitBlock(block);
+        continue;
+      }
+      // otherwise try a fresh page
       if (hasQuestions()) {
         flushPage();
         page.appendChild(block);
@@ -527,8 +590,9 @@ async function buildExamPages(rawPages) {
     if (page.children.length) flushPage();
 
     // every page gets its footer ("... Page 1 of N") now that the page count is known
-    return pages.map((inner, i) => examDocumentHtml(inner, pageFooterHtml(footerText, i + 1, pages.length)));
+    return pages.map((inner) => examDocumentHtml(inner)); // no page footer
   } finally {
     frame.remove();
   }
 }
+
