@@ -125,12 +125,24 @@ body {
 
 .page-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px clamp(12px, 3vw, 20px) 0; }
 .page-tabs:empty { display: none; }
-.page-tabs button {
-  flex: none; padding: 6px 16px; border-radius: 999px;
-  border: 1.5px solid var(--line); background: transparent; color: var(--muted);
+.page-tabs .tab {
+  flex: none; display: inline-flex; align-items: center;
+  border: 1.5px solid var(--line); border-radius: 999px; color: var(--muted);
+}
+.page-tabs .tab-label {
+  padding: 6px 6px 6px 16px; border: 0; border-radius: 999px 0 0 999px;
+  background: transparent; color: inherit;
   font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;
 }
-.page-tabs button.active { background: var(--head-grad); color: #fff; border-color: transparent; }
+.page-tabs .tab.single .tab-label { padding-right: 16px; border-radius: 999px; }
+.page-tabs .tab-close {
+  flex: none; width: 24px; height: 24px; margin-right: 5px; border: 0; border-radius: 50%;
+  background: transparent; color: inherit; font-size: 0.78rem; cursor: pointer;
+  display: grid; place-items: center; transition: background 0.15s;
+}
+.page-tabs .tab-close:hover, .page-tabs .tab-close:focus-visible { background: rgba(128, 128, 128, 0.25); outline: none; }
+.page-tabs .tab.active { background: var(--head-grad); color: #fff; border-color: transparent; }
+.page-tabs .tab.active .tab-close:hover { background: rgba(255, 255, 255, 0.3); }
 
 .editor-sheet { padding: 12px clamp(8px, 2vw, 16px); }
 /* TinyMCE: compact rounded toolbar like a modern doc editor */
@@ -162,6 +174,9 @@ body {
   transition: background 0.15s, transform 0.1s;
 }
 .quick-bar button i { font-size: 1.05rem; }
+/* long labels (No underline, Paste bottom...) get a smaller font so they stay inside the button */
+.quick-bar button.long { flex-basis: 58px; min-width: 58px; padding-left: 4px; padding-right: 4px; }
+.quick-bar button.long span { font-size: 0.58rem; letter-spacing: -0.01em; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .quick-bar button:active { transform: scale(0.95); }
 .quick-bar button.on { background: var(--head-grad); color: #fff; }
 .editor-hint { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 10px 16px 14px; }

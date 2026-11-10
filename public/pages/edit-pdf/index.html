@@ -171,6 +171,12 @@
       <button type="button" data-cmd="Italic" data-state="italic"><i class="fa-solid fa-italic"></i><span>Italic</span></button>
       <button type="button" data-cmd="Underline" data-state="underline"><i class="fa-solid fa-underline"></i><span>Underline</span></button>
       <button type="button" data-cmd="InsertUnorderedList" data-state="InsertUnorderedList"><i class="fa-solid fa-list-ul"></i><span>List</span></button>
+      <button type="button" class="long" data-action="unbold" title="Remove bold from the selected text"><i class="fa-solid fa-text-slash"></i><span>Unbold</span></button>
+      <button type="button" class="long" data-action="nounderline" title="Remove underline from the selected text"><i class="fa-solid fa-ban"></i><span>No underline</span></button>
+      <button type="button" data-action="copy" title="Copy the selected text as HTML"><i class="fa-solid fa-copy"></i><span>Copy</span></button>
+      <button type="button" data-action="paste" title="Paste the copied HTML at the cursor (between texts)"><i class="fa-solid fa-paste"></i><span>Paste</span></button>
+      <button type="button" class="long" data-action="pastetop" title="Paste the copied HTML at the top of the page"><i class="fa-solid fa-angles-up"></i><span>Paste top</span></button>
+      <button type="button" class="long" data-action="pastebottom" title="Paste the copied HTML at the bottom of the page"><i class="fa-solid fa-angles-down"></i><span>Paste bottom</span></button>
       <button type="button" id="moreBtn"><i class="fa-solid fa-ellipsis"></i><span>More</span></button>
     </nav>
     <p class="editor-hint">Each tab is one A4 page. Your edits are kept when you switch tabs.</p>
@@ -356,7 +362,8 @@ function initEditor() {
       menubar: false,
       plugins: "advlist lists link image table code fullscreen searchreplace charmap wordcount",
       toolbar:
-        "undo redo | blocks fontsize | bold italic underline | bullist | fontfamily strikethrough | " +
+        "undo redo | blocks fontsize | bold italic underline unbold nounderline | bullist | fontfamily strikethrough | " +
+        "copyhtml pastehere pastetop pastebottom | " +
         "forecolor backcolor | alignleft aligncenter alignright alignjustify | " +
         "numlist outdent indent | table image link | removeformat code fullscreen",
       toolbar_mode: "sliding",
@@ -373,7 +380,10 @@ function initEditor() {
         "html{background:#eef1fb}" +
         "body{width:210mm;min-height:296.5mm;margin:16px auto;background:#fff;" +
         "box-shadow:0 6px 24px rgba(30,34,90,.12);border-radius:6px;position:relative}",
-      setup: (ed) => ed.on("NodeChange SelectionChange", syncQuickBar),
+      setup: (ed) => {
+        ed.on("NodeChange SelectionChange", syncQuickBar);
+        registerEditorExtras(ed);
+      },
     })
     .then((editors) => editors[0]);
   return editorReady;
@@ -421,26 +431,76 @@ function saveCurrentPage() {
   if (ed) pages[current].body = ed.getContent();
 }
 
+function updateMeta() {
+  document.getElementById("editorMeta").textContent =
+    pages.length + (pages.length === 1 ? " page" : " pages") + " \u2022 Editing";
+}
+
 function renderTabs() {
   pageTabs.innerHTML = "";
   pages.forEach((_, i) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.textContent = "Page " + (i + 1);
-    b.addEventListener("click", async () => {
+    const tab = document.createElement("div");
+    tab.className = "tab" + (i === current ? " active" : "") + (pages.length === 1 ? " single" : "");
+
+    const label = document.createElement("button");
+    label.type = "button";
+    label.className = "tab-label";
+    label.textContent = "Page " + (i + 1);
+    label.addEventListener("click", async () => {
       if (i === current) return;
       saveCurrentPage();
       await showPage(i);
     });
-    pageTabs.appendChild(b);
+    tab.appendChild(label);
+
+    // cross button: remove this page (the last remaining page can't be removed)
+    if (pages.length > 1) {
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "tab-close";
+      close.title = "Remove page " + (i + 1);
+      close.setAttribute("aria-label", "Remove page " + (i + 1));
+      close.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      close.addEventListener("click", (e) => {
+        e.stopPropagation();
+        removePage(i);
+      });
+      tab.appendChild(close);
+    }
+    pageTabs.appendChild(tab);
   });
+}
+
+async function removePage(i) {
+  if (pages.length <= 1) {
+    toast("A PDF needs at least one page", "info");
+    return;
+  }
+  const res = await Swal.fire({
+    icon: "warning",
+    title: "Remove Page " + (i + 1) + "?",
+    text: "This page will be removed from the PDF.",
+    showCancelButton: true,
+    confirmButtonText: "Remove",
+    confirmButtonColor: "#e8431c",
+  });
+  if (!res.isConfirmed) return;
+
+  saveCurrentPage(); // keep edits of the page currently shown
+  const removedCurrent = i === current;
+  pages.splice(i, 1);
+  if (i < current) current--;
+  else if (removedCurrent) current = Math.min(i, pages.length - 1);
+
+  renderTabs();
+  updateMeta();
+  if (removedCurrent) await showPage(current);
 }
 
 async function openEditor(pageHtmlList) {
   pages = pageHtmlList.map(parsePage);
   document.getElementById("editorFileName").textContent = selectedFile.name;
-  document.getElementById("editorMeta").textContent =
-    pages.length + (pages.length === 1 ? " page" : " pages") + " \u2022 Editing";
+  updateMeta();
   uploadCard.classList.add("hidden");
   selTitle.classList.add("hidden");
   emptyMsg.classList.add("hidden");
@@ -527,6 +587,220 @@ document.getElementById("backBtn").addEventListener("click", () => {
   closeEditor();
 });
 
+
+/* =========================================================
+   Unbold / remove underline / copy HTML / paste
+   ========================================================= */
+let copiedHtml = ""; // the last HTML copied with the Copy button
+try { copiedHtml = sessionStorage.getItem("pdfcreate.copiedHtml") || ""; } catch (e) {}
+
+function toast(msg, icon) {
+  if (window.Swal) {
+    Swal.fire({ toast: true, position: "top", icon: icon || "success", title: msg,
+      showConfirmButton: false, timer: 1800 });
+  }
+}
+const getEd = () => tinymce.get("editor");
+
+// Elements that hold the selected text (or the cursor's element when nothing is selected)
+function selectedElements(ed) {
+  const rng = ed.selection.getRng();
+  if (rng.collapsed) {
+    const n = ed.selection.getNode();
+    return n ? [n] : [];
+  }
+  let root = rng.commonAncestorContainer;
+  if (root.nodeType !== 1) root = root.parentNode;
+  const walker = ed.getDoc().createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const els = [];
+  let t;
+  while ((t = walker.nextNode())) {
+    if (!t.nodeValue.trim() || !rng.intersectsNode(t)) continue;
+    if (t === rng.endContainer && rng.endOffset === 0) continue;
+    if (t === rng.startContainer && rng.startOffset >= t.nodeValue.length) continue;
+    els.push(t.parentElement);
+  }
+  if (!els.length) {
+    const n = ed.selection.getNode();
+    if (n) els.push(n);
+  }
+  return els;
+}
+
+function isBoldEl(ed, el) {
+  const w = ed.getWin().getComputedStyle(el).fontWeight;
+  return w === "bold" || w === "bolder" || parseInt(w, 10) >= 600;
+}
+
+// Underline is painted by an ancestor too, unless an inline-block/float/absolute box stops it
+function isUnderlinedEl(ed, el) {
+  const win = ed.getWin(), body = ed.getBody();
+  for (let n = el, first = true; n && n.nodeType === 1; n = n.parentNode) {
+    const cs = win.getComputedStyle(n);
+    if (!first && (/^(inline-block|inline-flex|inline-table|table-cell)$/.test(cs.display) ||
+        cs.cssFloat !== "none" || cs.position === "absolute" || cs.position === "fixed")) return false;
+    if ((cs.textDecorationLine || cs.textDecoration || "").indexOf("underline") > -1) return true;
+    if (n === body) break;
+    first = false;
+  }
+  return false;
+}
+
+function registerEditorExtras(ed) {
+  ed.on("init", () => {
+    // overrides for text that is bold / underlined by the page's own CSS (not by <b>, <strong>, <u>)
+    ed.formatter.register("unbold", { inline: "span", styles: { fontWeight: "normal" } });
+    ed.formatter.register("nounderline", { inline: "span", styles: { textDecoration: "none" } });
+    ed.formatter.register("nounderlineBlock", {
+      inline: "span", styles: { textDecoration: "none", display: "inline-block" },
+    });
+  });
+
+  // pressing Bold / Underline again must undo the "unbold" / "no underline" overrides
+  ed.on("BeforeExecCommand", (e) => {
+    const c = String(e.command || "").toLowerCase();
+    try {
+      if (c === "bold") ed.formatter.remove("unbold");
+      if (c === "underline") {
+        ed.formatter.remove("nounderline");
+        ed.formatter.remove("nounderlineBlock");
+      }
+    } catch (err) {}
+  });
+
+  const add = (name, text, tooltip, onAction, icon) =>
+    ed.ui.registry.addButton(name, Object.assign({ text, tooltip, onAction }, icon ? { icon } : {}));
+  add("unbold", "Unbold", "Remove bold from the selection", () => runAction("unbold"));
+  add("nounderline", "No underline", "Remove underline from the selection", () => runAction("nounderline"));
+  add("copyhtml", "Copy", "Copy the selection as HTML", () => runAction("copy"), "copy");
+  add("pastehere", "Paste", "Paste the copied HTML at the cursor", () => runAction("paste"), "paste");
+  add("pastetop", "Paste top", "Paste the copied HTML at the top of the page", () => runAction("pastetop"));
+  add("pastebottom", "Paste bottom", "Paste the copied HTML at the bottom of the page", () => runAction("pastebottom"));
+}
+
+function unboldSelection(ed) {
+  ed.undoManager.transact(() => {
+    ed.formatter.remove("bold");        // <strong>, <b> and font-weight:bold spans
+    ed.formatter.remove("unbold");
+    // still bold? then the page's CSS makes it bold (headings, classes) -> override it
+    if (selectedElements(ed).some((el) => isBoldEl(ed, el))) ed.formatter.apply("unbold");
+  });
+}
+
+function removeUnderlineSelection(ed) {
+  ed.undoManager.transact(() => {
+    ed.formatter.remove("underline");   // <u> and text-decoration:underline spans
+    ed.formatter.remove("nounderline");
+    ed.formatter.remove("nounderlineBlock");
+    if (selectedElements(ed).some((el) => isUnderlinedEl(ed, el))) ed.formatter.apply("nounderline");
+    // underline inherited from a parent element can only be stopped by its own box
+    if (selectedElements(ed).some((el) => isUnderlinedEl(ed, el))) ed.formatter.apply("nounderlineBlock");
+  });
+}
+
+// Exact HTML of the selection, incl. the inline wrappers (<strong>, <span style>, <a> ...) around it
+function getSelectionHtml(ed) {
+  const rng = ed.selection.getRng();
+  if (rng.collapsed) return "";
+  try {
+    const doc = ed.getDoc();
+    const holder = doc.createElement("div");
+    holder.appendChild(rng.cloneContents());
+    let anc = rng.commonAncestorContainer;
+    if (anc.nodeType !== 1) anc = anc.parentNode;
+    const body = ed.getBody();
+    while (anc && anc !== body && anc.nodeType === 1 && !ed.dom.isBlock(anc)) {
+      const wrap = anc.cloneNode(false);
+      while (holder.firstChild) wrap.appendChild(holder.firstChild);
+      holder.appendChild(wrap);
+      anc = anc.parentNode;
+    }
+    return holder.innerHTML;
+  } catch (err) {
+    return ed.selection.getContent({ format: "html" });
+  }
+}
+
+async function copySelection(ed) {
+  const html = getSelectionHtml(ed);
+  const text = ed.selection.getContent({ format: "text" });
+  if (!html || (!text.trim() && !/<(img|table|hr|svg)\b/i.test(html))) {
+    toast("Select some text first", "info");
+    return;
+  }
+  copiedHtml = html;
+  try { sessionStorage.setItem("pdfcreate.copiedHtml", html); } catch (e) {}
+  // also put it on the system clipboard (HTML + plain text) so it can be pasted elsewhere
+  try {
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" }),
+      })]);
+    }
+  } catch (e) {}
+  toast("HTML copied");
+}
+
+async function getCopiedHtml() {
+  if (copiedHtml) return copiedHtml;
+  try { // nothing copied here yet: fall back to HTML on the system clipboard
+    for (const item of await navigator.clipboard.read()) {
+      if (item.types.includes("text/html")) return await (await item.getType("text/html")).text();
+    }
+  } catch (e) {}
+  return "";
+}
+
+async function pasteCopied(ed, where) {
+  const html = await getCopiedHtml();
+  if (!html) {
+    toast("Nothing copied yet \u2013 select text and tap Copy", "info");
+    return;
+  }
+  if (where === "cursor") {
+    ed.focus();
+    ed.insertContent(html); // replaces the selection / splits the text at the cursor
+  } else {
+    ed.undoManager.transact(() => {
+      const body = ed.getBody();
+      const box = ed.getDoc().createElement("div");
+      box.innerHTML = html;
+      // loose inline text (a copied word or sentence) gets its own paragraph
+      if ([...box.childNodes].every((n) => n.nodeType !== 1 || !ed.dom.isBlock(n))) {
+        const p = ed.getDoc().createElement("p");
+        while (box.firstChild) p.appendChild(box.firstChild);
+        box.appendChild(p);
+      }
+      const nodes = [...box.childNodes];
+      if (where === "top") {
+        const first = body.firstChild;
+        nodes.forEach((n) => body.insertBefore(n, first));
+      } else {
+        nodes.forEach((n) => body.appendChild(n));
+      }
+    });
+    ed.nodeChanged();
+    const target = where === "top" ? ed.getBody().firstElementChild : ed.getBody().lastElementChild;
+    if (target && target.scrollIntoView) target.scrollIntoView({ block: "nearest" });
+  }
+  ed.setDirty(true);
+}
+
+function runAction(action) {
+  const ed = getEd();
+  if (!ed) return;
+  ({
+    unbold: () => { ed.focus(); unboldSelection(ed); },
+    nounderline: () => { ed.focus(); removeUnderlineSelection(ed); },
+    copy: () => copySelection(ed),
+    paste: () => pasteCopied(ed, "cursor"),
+    pastetop: () => pasteCopied(ed, "top"),
+    pastebottom: () => pasteCopied(ed, "bottom"),
+  })[action]();
+  syncQuickBar();
+}
+
 /* ---------- Bottom quick-format bar ---------- */
 const quickBar = document.getElementById("quickBar");
 function syncQuickBar() {
@@ -547,6 +821,10 @@ quickBar.querySelectorAll("[data-cmd]").forEach((b) =>
     syncQuickBar();
   })
 );
+quickBar.querySelectorAll("[data-action]").forEach((b) => {
+  b.addEventListener("mousedown", (e) => e.preventDefault()); // keep the text selection
+  b.addEventListener("click", () => runAction(b.dataset.action));
+});
 document.getElementById("moreBtn").addEventListener("click", (e) => {
   const open = editorView.classList.toggle("show-tools");
   e.currentTarget.classList.toggle("on", open);
