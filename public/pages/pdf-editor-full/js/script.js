@@ -996,12 +996,16 @@
       const data = await exportPdf();
       const blob = new Blob([data], { type: 'application/pdf' });
       $('saveModalText').textContent =
-        `${state.pages.length} page${state.pages.length === 1 ? '' : 's'} ready. Download starts after a short countdown.`;
+        `${state.pages.length} page${state.pages.length === 1 ? '' : 's'} ready. Download PDF opens the print dialog (5s); Download PDF compatible downloads a file (12s).`;
       $('saveModal').hidden = false;
+      // Normal: 5s wait, then the browser's print dialog.
       $('saveModalDownload').onclick = (event) => {
-        const button = event.currentTarget;
+        window.pdfCreateDownload.downloadNormal(event.currentTarget, blob);
+      };
+      // Compatible: 12s wait, then the PDF file downloads directly.
+      $('saveModalCompat').onclick = (event) => {
         const filename = state.name.replace(/\.pdf$/i, '') + '_edited.pdf';
-        window.pdfCreateDownload.withCountdown(button, async () => () => {
+        window.pdfCreateDownload.downloadCompatible(event.currentTarget, async () => () => {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -1025,5 +1029,6 @@
   $('saveModalClose').addEventListener('click', () => {
     $('saveModal').hidden = true;
     $('saveModalDownload').onclick = null;
+    $('saveModalCompat').onclick = null;
   });
 })();

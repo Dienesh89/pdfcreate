@@ -205,7 +205,8 @@
   <div class="modal">
     <h2>PDF ready</h2>
     <p id="pdfModalText">Your edited PDF will download automatically after a short countdown.</p>
-    <button type="button" class="btn" id="pdfModalDownload">Download PDF</button>
+    <button type="button" class="btn" id="pdfModalDownload" data-pdf-dl>Download PDF</button>
+    <button type="button" class="btn" id="pdfModalCompat" data-pdf-dl>Download PDF compatible</button>
     <button type="button" class="btn ghost" id="pdfModalClose">Close</button>
   </div>
 </div>
@@ -875,7 +876,7 @@ downloadPdfBtn.addEventListener("click", async () => {
     await preparePdfPages(pages.map(buildPageHtml));
     document.getElementById("pdfModalText").textContent =
       pages.length + (pages.length === 1 ? " page is" : " pages are") +
-      " ready. Download starts after a short countdown.";
+      " ready. Download PDF opens the print dialog (5s); Download PDF compatible downloads a file (12s).";
     pdfModal.classList.remove("hidden");
   } catch (err) {
     console.error(err);
@@ -887,10 +888,14 @@ downloadPdfBtn.addEventListener("click", async () => {
   }
 });
 
+// Normal: 5s wait, then the browser's print dialog.
 document.getElementById("pdfModalDownload").addEventListener("click", (event) => {
-  const button = event.currentTarget;
+  window.pdfCreateDownload.downloadNormal(event.currentTarget);
+});
+// Compatible: 12s wait, then the server-made PDF downloads directly.
+document.getElementById("pdfModalCompat").addEventListener("click", (event) => {
   const filename = selectedFile.name.replace(/\.pdf$/i, "") + "-edited";
-  window.pdfCreateDownload.withCountdown(button, () =>
+  window.pdfCreateDownload.downloadCompatible(event.currentTarget, () =>
     window.pdfCreateDownload.downloadPrepared(filename)
   );
 });

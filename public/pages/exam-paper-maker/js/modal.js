@@ -98,15 +98,22 @@ let imageProcessingInfo = [];
       document.getElementById('pmTitle').textContent = 'PDF ready';
       sub.textContent = 'Exam paper · ' + pageCount + (pageCount === 1 ? ' page' : ' pages');
       body.innerHTML =
-        '<p class="pm-hint">Your PDF will be prepared and downloaded automatically.</p>' +
+        '<p class="pm-hint">Download PDF opens the browser print dialog (about 5 seconds). If that has any problem, use Download PDF compatible (about 12 seconds).</p>' +
         '<div class="pm-actions">' +
-        '<button type="button" class="pm-btn primary" id="pmDownloadBtn">Download PDF</button>' +
+        '<button type="button" class="pm-btn primary" id="pmDownloadBtn" data-pdf-dl>Download PDF</button>' +
+        '<button type="button" class="pm-btn" id="pmCompatBtn" data-pdf-dl>Download PDF compatible</button>' +
         '<button type="button" class="pm-btn" id="pmEditBtn"><i class="fa-solid fa-pen-to-square"></i> Edit PDF</button>' +
         '<button type="button" class="pm-btn" id="pmCloseBtn">Close</button>' +
         '</div>';
+      // Normal: 5s wait, then the browser's own print dialog.
       const downloadButton = document.getElementById('pmDownloadBtn');
       downloadButton.onclick = () => {
-        if (onDownload) window.pdfCreateDownload.withCountdown(downloadButton, onDownload);
+        window.pdfCreateDownload.downloadNormal(downloadButton);
+      };
+      // Compatible: 12s wait, then the PDF made by the server downloads directly.
+      const compatButton = document.getElementById('pmCompatBtn');
+      compatButton.onclick = () => {
+        if (onDownload) window.pdfCreateDownload.downloadCompatible(compatButton, onDownload);
       };
       document.getElementById('pmEditBtn').onclick = () => {
         // Pass the generated pages to the editor chooser.
@@ -206,51 +213,3 @@ let imageProcessingInfo = [];
 
 // ==================================================================================================
 
-/**
- * updateModalLoading(imageNo, isCompressed, isUploaded, isConverted)
- * isConverted = [status, retryCount, maxRetry, waitingTime(seconds)]
- *   status: 'nothing' (conversion not started yet) | 'pending' (rate-limited, waiting to retry)
- *           | true (done) | false (limit reached)
- */
-
-/**
-  window.updateModalLoading = function (imageNo, isCompressed, isUploaded, isConverted) {
-    const card = document.getElementById('pm-img-' + imageNo);
-    if (!card) return;
-
-    // 1) Compress
-    setStep(card, 'compress', isCompressed ? 'done' : 'active');
-
-    // 2) Upload
-    setStep(card, 'upload', isUploaded ? 'done' : (isCompressed ? 'active' : 'pending'));
-
-    // 3) Convert
-    const arr = Array.isArray(isConverted) ? isConverted : [isConverted];
-    const status = arr[0], retry = arr[1] || 0, max = arr[2] || 0;
-    const wait = (arr[3] !== undefined && arr[3] !== null) ? Number(arr[3]) : DEFAULT_WAIT;
-
-    state[imageNo] = state[imageNo] || {};
-
-    if (status === true) {
-      state[imageNo].deadline = null;
-      setStep(card, 'convert', 'done');
-    } else if (status === false) {
-      state[imageNo].deadline = null;
-      setStep(card, 'convert', 'error', 'Limit reached. Try again in ~2 minutes.', 'err');
-    } else if (status === 'pending') {
-      state[imageNo].deadline = Date.now() + wait * 1000;
-      setStep(card, 'convert', 'active',
-        'Rate limit hit · Retry ' + retry + '/' + max + '<br>Retrying in <b class="cd">' + fmt(wait) + '</b>', 'warn');
-      ensureTicker();
-    } else if (status === 'nothing') {
-      // conversion has not started yet -> stays pending (dot, no spinner)
-      state[imageNo].deadline = null;
-      setStep(card, 'convert', 'pending');
-    } else {
-      // conversion running normally (no retry/wait yet)
-      state[imageNo].deadline = null;
-      setStep(card, 'convert', isUploaded ? 'active' : 'pending');
-    }
-  };
-})();
-**/
