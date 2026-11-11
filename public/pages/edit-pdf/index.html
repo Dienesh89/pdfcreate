@@ -70,6 +70,7 @@
 <link rel="stylesheet" href="../../vendor/sweetalert2/sweetalert2.min.css">
 <script src="../../vendor/sweetalert2/sweetalert2.all.min.js"></script>
 <script src="../../js/pdf-download.js"></script>
+<script src="../../js/editor-session.js"></script>
 <script src="pdf-export.js"></script>
 <link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -383,6 +384,8 @@ function initEditor() {
         "box-shadow:0 6px 24px rgba(30,34,90,.12);border-radius:6px;position:relative}",
       setup: (ed) => {
         ed.on("NodeChange SelectionChange", syncQuickBar);
+        // keep the last opened PDF + all edits saved in this browser
+        ed.on("Change Input KeyUp Undo Redo AddUndo", () => textSaver.schedule());
         registerEditorExtras(ed);
       },
     })
@@ -392,6 +395,10 @@ function initEditor() {
 
 // Put page i into the editor (page CSS goes into the editor iframe's <head>)
 async function showPage(i) {
+  switching = true;
+  try { await showPageInner(i); } finally { switching = false; }
+}
+async function showPageInner(i) {
   const editor = await initEditor();
   current = i;
   const p = pages[i];
@@ -432,6 +439,22 @@ function saveCurrentPage() {
   if (ed) pages[current].body = ed.getContent();
 }
 
+/* ---------- Keep the last opened PDF + edits in this browser ---------- */
+let switching = false; // true while a page is being put into the editor
+function persistText() {
+  if (!pages.length || !selectedFile) return;
+  if (switching) { textSaver.schedule(); return; } // editor is mid-switch: try again shortly
+  saveCurrentPage();
+  window.pdfEditorSession.save({
+    key: "text",
+    name: selectedFile.name,
+    current,
+    pages,
+    savedAt: Date.now(),
+  });
+}
+const textSaver = window.pdfEditorSession.autosaver(persistText, 600);
+
 function updateMeta() {
   document.getElementById("editorMeta").textContent =
     pages.length + (pages.length === 1 ? " page" : " pages") + " \u2022 Editing";
@@ -451,6 +474,7 @@ function renderTabs() {
       if (i === current) return;
       saveCurrentPage();
       await showPage(i);
+      textSaver.schedule();
     });
     tab.appendChild(label);
 
@@ -496,10 +520,11 @@ async function removePage(i) {
   renderTabs();
   updateMeta();
   if (removedCurrent) await showPage(current);
+  textSaver.flush();
 }
 
-async function openEditor(pageHtmlList) {
-  pages = pageHtmlList.map(parsePage);
+async function openEditor(pageHtmlList, restored) {
+  pages = restored ? restored.pages : pageHtmlList.map(parsePage);
   document.getElementById("editorFileName").textContent = selectedFile.name;
   updateMeta();
   uploadCard.classList.add("hidden");
@@ -508,12 +533,13 @@ async function openEditor(pageHtmlList) {
   editorView.classList.remove("hidden");
   mainEl.classList.add("editing");
   renderTabs();
-  await showPage(0);
+  await showPage(restored ? Math.min(Math.max(restored.current | 0, 0), pages.length - 1) : 0);
   editorView.scrollIntoView({ behavior: "smooth" });
 }
 
 function closeEditor() {
   saveCurrentPage();
+  window.pdfEditorSession.clear("text"); // the user closed this PDF on purpose
   editorView.classList.add("hidden");
   uploadCard.classList.remove("hidden");
   selTitle.classList.remove("hidden");
@@ -539,6 +565,7 @@ async function startEdit() {
     const recovered = await recoverHiddenPages(selectedFile);
     const list = Array.isArray(recovered) ? recovered : [recovered];
     await openEditor(list);
+    textSaver.flush(); // this PDF is now the last opened one
   } catch (err) {
     if (err.code === "NO_HIDDEN_DATA") {
       try {
@@ -831,20 +858,36 @@ document.getElementById("moreBtn").addEventListener("click", (e) => {
   e.currentTarget.classList.toggle("on", open);
 });
 
-/* ---------- Opened from "Edit PDF" in a generator's download popup ---------- */
-(async function openGeneratedPdf() {
-  if (new URLSearchParams(location.search).get("generated") !== "1") return;
+/* ---------- On page load ----------
+   - opened from "Edit PDF" in a generator's download popup (?generated=1): open that new PDF
+   - anything else (features page, refresh, re-opened tab): bring back the last opened PDF
+     with all the edits that were made on it */
+(async function openInitialPdf() {
   let list = null;
-  try {
-    list = JSON.parse(sessionStorage.getItem("pdfcreate.generatedPages") || "null");
-    sessionStorage.removeItem("pdfcreate.generatedPages"); // use once
-  } catch (e) {}
-  if (!Array.isArray(list) || !list.length) return;
+  if (new URLSearchParams(location.search).get("generated") === "1") {
+    try {
+      list = JSON.parse(sessionStorage.getItem("pdfcreate.generatedPages") || "null");
+      sessionStorage.removeItem("pdfcreate.generatedPages"); // use once
+    } catch (e) {}
+  }
+  const fresh = Array.isArray(list) && list.length > 0;
+  let saved = null;
+  if (!fresh) {
+    saved = await window.pdfEditorSession.load("text");
+    if (!saved || !Array.isArray(saved.pages) || !saved.pages.length) return;
+  }
   busy = true;
   const hideLoading = window.pdfCreateDownload.showDelayedLoading("Reading PDF…");
-  selectedFile = { name: "Generated PDF.pdf" };
   try {
-    await openEditor(list);
+    if (fresh) {
+      selectedFile = { name: "Generated PDF.pdf" };
+      await openEditor(list);
+      textSaver.flush(); // the new PDF replaces the previously saved one
+    } else {
+      selectedFile = { name: saved.name || "PDF.pdf" };
+      await openEditor(null, saved);
+      window.pdfEditorSession.notify("Restored your last PDF with your edits");
+    }
   } catch (err) {
     alert("Error: " + err.message);
     selectedFile = null;

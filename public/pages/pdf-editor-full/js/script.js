@@ -177,7 +177,7 @@
   }
 
   /* ---------- loading ---------- */
-  async function loadFile(file, hideLoading = null) {
+  async function loadFile(file, hideLoading = null, opts = {}) {
     showMsg('');
     if (!file) return;
     if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') {
@@ -219,6 +219,7 @@
       el.allChk.checked = true;
       el.fitChk.checked = true;
       syncControls();
+      if (!opts.restore) startSession(file, bytes);   // this PDF is now the last opened one
       await showPage(0);
     } catch (err) {
       console.error(err);
@@ -824,7 +825,7 @@
 
   /* ---------- upload ---------- */
   el.fileInput.addEventListener('change', () => loadFile(el.fileInput.files[0]));
-  el.removeBtn.addEventListener('click', clearFile);
+  el.removeBtn.addEventListener('click', () => { clearFile(); forgetSession(); });
 
   ['dragenter', 'dragover'].forEach((t) =>
     el.dropzone.addEventListener(t, (e) => { e.preventDefault(); el.dropzone.classList.add('over'); }));
@@ -832,8 +833,73 @@
     el.dropzone.addEventListener(t, (e) => { e.preventDefault(); el.dropzone.classList.remove('over'); }));
   el.dropzone.addEventListener('drop', (e) => loadFile(e.dataTransfer.files[0]));
 
+  /* ---------- keep the last opened PDF + edits in this browser ----------
+     Stored on this device only (IndexedDB). Restored on refresh / re-open, whether the editor is
+     opened from the features page or from a download popup. */
+  const session = window.pdfEditorSession;
+  let sessionFileId = null;   // id of the saved original PDF; null = nothing is being auto-saved
+  let savedSig = '';
+
+  function startSession(file, bytes) {
+    sessionFileId = session.newId();
+    const rec = sessionRecord();
+    savedSig = sessionSig(rec);
+    session.save([
+      { key: 'full-file', fileId: sessionFileId, name: file.name, blob: new Blob([bytes], { type: 'application/pdf' }) },
+      rec,
+    ]);
+  }
+
+  function sessionRecord() {
+    return { key: 'full', fileId: sessionFileId, name: state.name, cur: state.cur, snapshot: historySnapshot(), savedAt: Date.now() };
+  }
+  const sessionSig = (rec) => JSON.stringify({ ...rec, savedAt: 0 });
+
+  function persistState() {
+    if (!state.doc || !sessionFileId || applyingHistory) return;
+    const rec = sessionRecord();
+    const sig = sessionSig(rec);
+    if (sig === savedSig) return;      // nothing changed since the last save
+    savedSig = sig;
+    session.save(rec);
+  }
+  setInterval(persistState, 1500);     // catches every kind of edit (rotate, zoom, size, text...)
+  session.onLeave(persistState);
+
+  function forgetSession() {
+    sessionFileId = null;
+    savedSig = '';
+    session.clear(['full', 'full-file']);
+  }
+
+  async function restoreLastSession() {
+    const [meta, fileRec] = await Promise.all([session.load('full'), session.load('full-file')]);
+    if (!meta || !fileRec || meta.fileId !== fileRec.fileId || !(fileRec.blob instanceof Blob)) return false;
+
+    showMsg('Opening your last PDF…');
+    const hideLoading = window.pdfCreateDownload.showDelayedLoading('Reading PDF…');
+    sessionFileId = null;              // do not auto-save over the stored edits until they are applied
+    try {
+      await loadFile(new File([fileRec.blob], fileRec.name || 'document.pdf', { type: 'application/pdf' }), hideLoading, { restore: true });
+      if (!state.doc) return false;
+      const snap = meta.snapshot;
+      if (snap && Array.isArray(snap.tf) && snap.tf.length === state.pages.length) {
+        state.cur = clamp(meta.cur | 0, 0, state.pages.length - 1);
+        await restoreHistory(snap);
+      }
+      sessionFileId = fileRec.fileId;
+      savedSig = sessionSig(sessionRecord());
+      showMsg('');
+      session.notify('Restored your last PDF with your edits');
+      return true;
+    } finally {
+      hideLoading();
+    }
+  }
+
+  // returns true when a generated PDF was found (and opened or failed), false when there is none
   async function openGeneratedPdf() {
-    if (new URLSearchParams(location.search).get('generated') !== '1') return;
+    if (new URLSearchParams(location.search).get('generated') !== '1') return false;
 
     let pages, name = 'document';
     try {
@@ -841,14 +907,9 @@
       name = sessionStorage.getItem('pdfcreate.generatedName') || name;
     } catch (err) {
       console.error(err);
-      showMsg('Could not access the generated PDF. Please go back and generate it again.');
-      return;
+      return false;
     }
-
-    if (!Array.isArray(pages) || pages.length === 0) {
-      showMsg('No generated PDF found. Please go back and generate it again.');
-      return;
-    }
+    if (!Array.isArray(pages) || pages.length === 0) return false;   // e.g. page was refreshed
 
     showMsg('Preparing your PDF…');
     const hideLoading = window.pdfCreateDownload.showDelayedLoading('Reading PDF…');
@@ -865,29 +926,38 @@
     } finally {
       hideLoading();
     }
+    return true;
   }
 
   async function openTransferredPdf() {
     const transferId = new URLSearchParams(location.search).get('transfer');
-    if (!transferId) return;
+    if (!transferId) return false;
 
-    showMsg('Opening your PDF…');
     try {
       const transfer = await window.pdfCreateDownload.getPdfTransfer(transferId);
-      if (!transfer || !(transfer.file instanceof Blob)) {
-        showMsg('The transferred PDF could not be found. Please upload it again.');
-        return;
-      }
+      if (!transfer || !(transfer.file instanceof Blob)) return false;   // already used (page refreshed)
+      showMsg('Opening your PDF…');
       await loadFile(new File([transfer.file], transfer.name || 'document.pdf', { type: 'application/pdf' }));
       if (state.doc) await window.pdfCreateDownload.removePdfTransfer(transferId);
     } catch (err) {
       console.error(err);
       showMsg(err.message || 'Could not open the transferred PDF.');
     }
+    return true;
   }
 
-  openGeneratedPdf();
-  openTransferredPdf();
+  (async function openInitialPdf() {
+    if (await openGeneratedPdf()) return;
+    if (await openTransferredPdf()) return;
+    let restored = false;
+    try { restored = await restoreLastSession(); } catch (err) { console.error(err); }
+    if (!restored) {
+      const qs = new URLSearchParams(location.search);
+      if (qs.get('generated') === '1') showMsg('No generated PDF found. Please go back and generate it again.');
+      else if (qs.get('transfer')) showMsg('The transferred PDF could not be found. Please upload it again.');
+      else if (!state.doc) showMsg('');
+    }
+  })();
 
   /* ---------- hidden source HTML (written by pdf-export.js) ----------
      PDFs made by PDF Create carry their HTML as near-invisible text "HW1<i>.<n>.<len>:<data>".
